@@ -3,10 +3,15 @@ package com.hardgforgif.dragonboatracing.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.hardgforgif.dragonboatracing.DragonBoatRacing;
+import com.hardgforgif.dragonboatracing.HelloWorld;
+import com.hardgforgif.dragonboatracing.standaloneprojects.moveableplayer.Player;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		new LwjglApplication(new DragonBoatRacing(), config);
+		config.width = 480;
+		config.height = 320;
+		config.fullscreen = true;
+		new LwjglApplication(new Player(), config);
 	}
 }
