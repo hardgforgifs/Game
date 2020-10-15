@@ -3,6 +3,12 @@
 2. Open cmd and go to the folder in which you want to clone the project
 3. Type git clone https://github.com/hardgforgifs/Game.git
 
+
+## Instructions for branching
+1. Open cmd and got to the folder where you cloned the repository
+2. Type git checkout -b <BranchName>
+  
+
 ## Dependencies
 
 * openjdk 15?
