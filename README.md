@@ -13,7 +13,7 @@
 1. Open cmd and navigate to the repository location
 2. Type git add .
 3. Type git commit -m "Commit message"
-4. Type git push
+4. Type git push\
 All the code will be added to your branch of the repository. We will merge all this changes to master later.
 
 ## Dependencies
