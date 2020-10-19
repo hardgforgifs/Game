@@ -4,14 +4,15 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.hardgforgif.dragonboatracing.DragonBoatRacing;
 import com.hardgforgif.dragonboatracing.HelloWorld;
+import com.hardgforgif.dragonboatracing.standaloneprojects.moveableplayer.MouseMovementPlayer;
 import com.hardgforgif.dragonboatracing.standaloneprojects.moveableplayer.Player;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 480;
-		config.height = 320;
-		config.fullscreen = true;
-		new LwjglApplication(new Player(), config);
+		config.width = 960;
+		config.height = 640;
+		//config.fullscreen = true;
+		new LwjglApplication(new MouseMovementPlayer(), config);
 	}
 }
