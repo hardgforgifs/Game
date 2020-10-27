@@ -138,7 +138,7 @@ public class MouseMovementPlayer implements ApplicationListener, InputProcessor 
 
 //        shapeRenderer.setColor(Color.BLACK);
 //        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-//        shapeRenderer.circle(directionPosition.x, directionPosition.y, 5);
+//        shapeRenderer.circle(sprite.getX(), sprite.getY(), 5);
 //        shapeRenderer.end();
     }
 
