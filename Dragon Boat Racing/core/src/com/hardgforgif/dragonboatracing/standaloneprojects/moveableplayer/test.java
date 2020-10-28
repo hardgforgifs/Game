@@ -11,6 +11,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -37,8 +41,20 @@ public class test extends ApplicationAdapter implements InputProcessor {
     float turningspeed = 2f;
     float speed = 50f;
     final float PIXELS_TO_METERS = 100f;
+    TiledMap tiledMap;
+    TiledMapRenderer tiledMapRenderer;
+
     @Override
     public void create() {
+        tiledMap = new TmxMapLoader().load("Trying.tmx");
+        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+
+        float w = Gdx.graphics.getWidth();
+        float h = Gdx.graphics.getHeight();
+
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false,w,h);
+
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
         img = new Texture("arrow.png");
@@ -61,10 +77,10 @@ public class test extends ApplicationAdapter implements InputProcessor {
         float scale = playerSprite.getWidth() / PIXELS_TO_METERS;
         loader.attachFixture(playerBody, "Name", fixtureDef, scale);
 
-        float w = Gdx.graphics.getWidth()/PIXELS_TO_METERS - 50/PIXELS_TO_METERS;
+        w = Gdx.graphics.getWidth()/PIXELS_TO_METERS - 50/PIXELS_TO_METERS;
         // Set the height to just 50 pixels above the bottom of the screen so we can see the edge in the
         // debug renderer
-        float h = Gdx.graphics.getHeight()/PIXELS_TO_METERS - 50/PIXELS_TO_METERS;
+        h = Gdx.graphics.getHeight()/PIXELS_TO_METERS - 50/PIXELS_TO_METERS;
 
         createMapEdge(50/PIXELS_TO_METERS, h, w, h);
         createMapEdge(50/PIXELS_TO_METERS, h, 50/PIXELS_TO_METERS, 50/PIXELS_TO_METERS);
@@ -212,6 +228,9 @@ public class test extends ApplicationAdapter implements InputProcessor {
                 Gdx.graphics.getHeight()/2 );
         batch.end();
         debugRenderer.render(world, debugMatrix);
+
+        tiledMapRenderer.setView(camera);
+        tiledMapRenderer.render();
 
 //        shapeRenderer.setColor(Color.BLUE);
 //        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
