@@ -4,9 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.hardgforgif.dragonboatracing.DragonBoatRacing;
-import com.hardgforgif.dragonboatracing.tools.CollisionRect;
+import com.hardgforgif.dragonboatracing.entities.Boat;
+import com.hardgforgif.dragonboatracing.entities.Obstacle;
+
+import java.util.ArrayList;
 
 public class MainGameScreen implements Screen {
     public static final float SPEED = 300;
@@ -17,22 +19,20 @@ public class MainGameScreen implements Screen {
     public static final int BOAT_WIDTH = BOAT_WIDTH_PIXEL * 3;
     public static final int BOAT_HEIGHT = BOAT_HEIGHT_PIXEL * 3;
 
-    float x;
-    float y;
+    ArrayList<Boat> boats;
+    ArrayList<Obstacle> obstacles;
 
-    Texture img;
-    CollisionRect playerRect;
 
     DragonBoatRacing game;
 
     public MainGameScreen(DragonBoatRacing game) {
         this.game = game;
-        x = DragonBoatRacing.WIDTH / 2 - BOAT_WIDTH / 2;
-        y = 15;
 
-        img = new Texture("boat1.png");
+        boats = new ArrayList<Boat>();
+        boats.add(new Boat(15, "boat1.png", true));
 
-        playerRect = new CollisionRect(0, 0, BOAT_WIDTH, BOAT_HEIGHT);
+        obstacles = new ArrayList<Obstacle>();
+        obstacles.add(new Obstacle(50));
 
         game.scrollingBackground.setSpeedFixed(false);
     }
@@ -44,12 +44,21 @@ public class MainGameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        if (isUp()) y += SPEED * Gdx.graphics.getDeltaTime();
-        if (isDown()) y -= SPEED * Gdx.graphics.getDeltaTime();
-        if (isLeft()) x -= SPEED * Gdx.graphics.getDeltaTime();
-        if (isRight()) x += SPEED * Gdx.graphics.getDeltaTime();
 
-        playerRect.move(x, y);
+
+
+        for (Boat boat: boats) {
+            if (boat.isPrimary()) {
+                if (isUp()) boat.moveUp(Gdx.graphics.getDeltaTime());
+                if (isDown()) boat.moveDown(Gdx.graphics.getDeltaTime());
+                if (isLeft()) boat.moveLeft(Gdx.graphics.getDeltaTime());
+                if (isRight()) boat.moveRight(Gdx.graphics.getDeltaTime());
+            }
+        }
+
+        for (Obstacle obstacle: obstacles) {
+            obstacle.update(Gdx.graphics.getDeltaTime());
+        }
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -57,24 +66,31 @@ public class MainGameScreen implements Screen {
 
         game.scrollingBackground.updateAndRender(delta, game.batch);
 
-        game.batch.draw(img, x, y);
+        for (Boat boat: boats) {
+            boat.render(game.batch);
+        }
+
+        for (Obstacle obstical: obstacles) {
+            obstical.render(game.batch);
+        }
+
         game.batch.end();
     }
 
     private boolean isRight() {
-        return Gdx.input.isKeyPressed(Input.Keys.UP) || (Gdx.input.isTouched() && game.cam.getInputInGameWorld().x >= x);
+        return Gdx.input.isKeyPressed(Input.Keys.UP) || (Gdx.input.isTouched());
     }
 
     private boolean isLeft () {
-        return Gdx.input.isKeyPressed(Input.Keys.LEFT) || (Gdx.input.isTouched() && game.cam.getInputInGameWorld().x < x);
+        return Gdx.input.isKeyPressed(Input.Keys.LEFT) || (Gdx.input.isTouched());
     }
 
     private boolean isUp () {
-        return Gdx.input.isKeyJustPressed(Input.Keys.UP) || (Gdx.input.isTouched() && game.cam.getInputInGameWorld().y >= y);
+        return Gdx.input.isKeyPressed(Input.Keys.UP) || (Gdx.input.isTouched());
     }
 
     private boolean isDown () {
-        return Gdx.input.isKeyJustPressed(Input.Keys.DOWN) || (Gdx.input.isTouched() && game.cam.getInputInGameWorld().y < y);
+        return Gdx.input.isKeyPressed(Input.Keys.DOWN) || (Gdx.input.isTouched());
     }
 
     @Override
