@@ -3,12 +3,13 @@ package com.hardgforgif.dragonboatracing.tools;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.hardgforgif.dragonboatracing.DragonBoatRacing;
 
 public class ScrollingBackground {
 
     public static final int DEFAULT_SPEED = 80;
     public static final int ACCELERATION = 50;
-    public static final int TARGET_AQUIRED_ACCELERATION = 200;
+    public static final int TARGET_ACQUIRED_ACCELERATION = 200;
 
     Texture image;
     float y1, y2;
@@ -32,11 +33,11 @@ public class ScrollingBackground {
     public void updateAndRender (float deltaTime, SpriteBatch batch) {
         // speed adjustment to reach goal
         if (speed < targetSpeed) {
-            speed += TARGET_AQUIRED_ACCELERATION * deltaTime;
+            speed += TARGET_ACQUIRED_ACCELERATION * deltaTime;
             if (speed > targetSpeed) speed = targetSpeed;
         }
         else if (speed > targetSpeed) {
-            speed -= TARGET_AQUIRED_ACCELERATION * deltaTime;
+            speed -= TARGET_ACQUIRED_ACCELERATION * deltaTime;
             if (speed < targetSpeed) speed = targetSpeed;
         }
 
@@ -54,8 +55,8 @@ public class ScrollingBackground {
         if (y2 + scaledHeight <= 0) y2 = y1 + scaledHeight;
 
         // render
-        batch.draw(image, 0, y1, Gdx.graphics.getWidth(), scaledHeight);
-        batch.draw(image, 0, y2, Gdx.graphics.getWidth(), scaledHeight);
+        batch.draw(image, 0, y1, DragonBoatRacing.WIDTH, scaledHeight);
+        batch.draw(image, 0, y2, DragonBoatRacing.WIDTH, scaledHeight);
     }
 
     public void resize(int width, int height) {

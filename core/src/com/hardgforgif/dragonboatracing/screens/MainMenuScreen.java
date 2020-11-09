@@ -10,17 +10,19 @@ import com.hardgforgif.dragonboatracing.tools.ScrollingBackground;
 
 public class MainMenuScreen implements Screen {
 
-    private static final int EXIT_BUTTON_WIDTH = 250;
-    private static final int EXIT_BUTTON_HEIGHT = 120;
-    private static final int EXIT_BUTTON_Y = 100;
+    private static final int LOGO_WIDTH = 200;
+    private static final int LOGO_HEIGHT = 100;
+    private static final int LOGO_Y = 450;
 
     private static final int PLAY_BUTTON_WIDTH = 300;
     private static final int PLAY_BUTTON_HEIGHT = 120;
     private static final int PLAY_BUTTON_Y = 230;
 
-    private static final int LOGO_WIDTH = 400;
-    private static final int LOGO_HEIGHT = 250;
-    private static final int LOGO_Y = 450;
+    private static final int EXIT_BUTTON_WIDTH = 250;
+    private static final int EXIT_BUTTON_HEIGHT = 120;
+    private static final int EXIT_BUTTON_Y = 100;
+
+
 
     final DragonBoatRacing game;
 
@@ -51,8 +53,8 @@ public class MainMenuScreen implements Screen {
                 int x = DragonBoatRacing.WIDTH / 2 - EXIT_BUTTON_WIDTH / 2;
                 if (
                         game.cam.getInputInGameWorld().x < x + EXIT_BUTTON_WIDTH && game.cam.getInputInGameWorld().x > x &&
-                        DragonBoatRacing.HEIGHT - game.cam.getInputInGameWorld().y < EXIT_BUTTON_Y + EXIT_BUTTON_HEIGHT &&
-                        DragonBoatRacing.HEIGHT - game.cam.getInputInGameWorld().y > EXIT_BUTTON_Y
+                        game.cam.getInputInGameWorld().y < EXIT_BUTTON_Y + EXIT_BUTTON_HEIGHT &&
+                        game.cam.getInputInGameWorld().y > EXIT_BUTTON_Y
                 ) {
                     mainMenuScreen.dispose();
                     Gdx.app.exit();
@@ -62,8 +64,8 @@ public class MainMenuScreen implements Screen {
                 x = DragonBoatRacing.WIDTH / 2 - PLAY_BUTTON_WIDTH / 2;
                 if (
                         game.cam.getInputInGameWorld().x < x + PLAY_BUTTON_WIDTH && game.cam.getInputInGameWorld().x > x &&
-                        DragonBoatRacing.HEIGHT - game.cam.getInputInGameWorld().y < PLAY_BUTTON_Y + PLAY_BUTTON_HEIGHT &&
-                        DragonBoatRacing.HEIGHT - game.cam.getInputInGameWorld().y > PLAY_BUTTON_Y
+                        game.cam.getInputInGameWorld().y < PLAY_BUTTON_Y + PLAY_BUTTON_HEIGHT &&
+                        game.cam.getInputInGameWorld().y > PLAY_BUTTON_Y
                 ) {
                     mainMenuScreen.dispose();
                     game.setScreen(new MainGameScreen(game));
@@ -86,29 +88,32 @@ public class MainMenuScreen implements Screen {
 
         game.scrollingBackground.updateAndRender(delta, game.batch);
 
-        int x = DragonBoatRacing.WIDTH / 2 - EXIT_BUTTON_WIDTH / 2;
-        if (
-                game.cam.getInputInGameWorld().x < x + EXIT_BUTTON_WIDTH && game.cam.getInputInGameWorld().x > x &&
-                DragonBoatRacing.HEIGHT - game.cam.getInputInGameWorld().y < EXIT_BUTTON_Y + EXIT_BUTTON_HEIGHT &&
-                DragonBoatRacing.HEIGHT - game.cam.getInputInGameWorld().y > EXIT_BUTTON_Y
-        ) {
-            game.batch.draw(exitButtonActive, x, EXIT_BUTTON_Y, EXIT_BUTTON_WIDTH, EXIT_BUTTON_HEIGHT);
-        } else {
-            game.batch.draw(exitButtonInactive, x, EXIT_BUTTON_Y, EXIT_BUTTON_WIDTH, EXIT_BUTTON_HEIGHT);
-        }
+        game.batch.draw(logo, DragonBoatRacing.WIDTH / 2 - LOGO_WIDTH / 2, LOGO_Y, LOGO_WIDTH, LOGO_HEIGHT);
 
-        x = DragonBoatRacing.WIDTH / 2 - PLAY_BUTTON_WIDTH / 2;
+
+        int x = DragonBoatRacing.WIDTH / 2 - PLAY_BUTTON_WIDTH / 2;
         if (
-                game.cam.getInputInGameWorld().x < x + PLAY_BUTTON_WIDTH && game.cam.getInputInGameWorld().x > x &&
-                DragonBoatRacing.HEIGHT - game.cam.getInputInGameWorld().y < PLAY_BUTTON_Y + PLAY_BUTTON_HEIGHT &&
-                DragonBoatRacing.HEIGHT - game.cam.getInputInGameWorld().y > PLAY_BUTTON_Y
+                game.cam.getInputInGameWorld().x < x + PLAY_BUTTON_WIDTH &&
+                game.cam.getInputInGameWorld().x > x &&
+                // cur pos < top_height
+                game.cam.getInputInGameWorld().y < PLAY_BUTTON_Y + PLAY_BUTTON_HEIGHT &&
+                game.cam.getInputInGameWorld().y > PLAY_BUTTON_Y
         ) {
             game.batch.draw(playButtonActive, x, PLAY_BUTTON_Y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
         } else {
             game.batch.draw(playButtonInactive, x, PLAY_BUTTON_Y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
         }
 
-        game.batch.draw(logo, DragonBoatRacing.WIDTH / 2 - LOGO_WIDTH / 2, LOGO_Y, LOGO_WIDTH, LOGO_HEIGHT);
+        x = DragonBoatRacing.WIDTH / 2 - EXIT_BUTTON_WIDTH / 2;
+        if (
+                game.cam.getInputInGameWorld().x < x + EXIT_BUTTON_WIDTH && game.cam.getInputInGameWorld().x > x &&
+                game.cam.getInputInGameWorld().y < EXIT_BUTTON_Y + EXIT_BUTTON_HEIGHT &&
+                game.cam.getInputInGameWorld().y > EXIT_BUTTON_Y
+        ) {
+            game.batch.draw(exitButtonActive, x, EXIT_BUTTON_Y, EXIT_BUTTON_WIDTH, EXIT_BUTTON_HEIGHT);
+        } else {
+            game.batch.draw(exitButtonInactive, x, EXIT_BUTTON_Y, EXIT_BUTTON_WIDTH, EXIT_BUTTON_HEIGHT);
+        }
 
         game.batch.end();
     }
