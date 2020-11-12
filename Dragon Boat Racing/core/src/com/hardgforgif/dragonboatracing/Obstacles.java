@@ -1,2 +1,4 @@
-package com.hardgforgif.dragonboatracing;public class Obstacles {
+package com.hardgforgif.dragonboatracing;
+
+public class Obstacles {
 }

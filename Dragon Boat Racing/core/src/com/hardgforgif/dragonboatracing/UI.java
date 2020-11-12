@@ -1,2 +1,4 @@
-package com.hardgforgif.dragonboatracing;public class UI {
+package com.hardgforgif.dragonboatracing;
+
+public class UI {
 }

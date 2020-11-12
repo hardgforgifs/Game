@@ -63,13 +63,10 @@ public class test extends ApplicationAdapter implements InputProcessor {
         MapProperties prop = tiledMap.getProperties();
 
         int mapWidth = prop.get("width", Integer.class);
-        int mapHeight = prop.get("height", Integer.class);
-        int tilePixelWidth = prop.get("tilewidth", Integer.class);
 
         TILES_TO_METERS = (w / METERS_TO_PIXELS) / mapWidth;
 
         PIXELS_TO_TILES = 1/(METERS_TO_PIXELS * TILES_TO_METERS);
-        System.out.println(PIXELS_TO_TILES);
 
         float unitScale = w / mapWidth / 32f;
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, unitScale);
@@ -111,7 +108,7 @@ public class test extends ApplicationAdapter implements InputProcessor {
 //        createMapEdge(50/ METERS_TO_PIXELS, 50/ METERS_TO_PIXELS, w, 50/ METERS_TO_PIXELS);
 //        createMapEdge(w, 50/ METERS_TO_PIXELS, w, h);
 
-        Gdx.input.setInputProcessor(this);
+
         debugRenderer = new Box2DDebugRenderer();
 //        camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.
 //                getHeight());
@@ -152,24 +149,6 @@ public class test extends ApplicationAdapter implements InputProcessor {
         }
     }
 
-    private void createMapEdge(float x1, float y1, float x2, float y2) {
-        BodyDef bodyDef2 = new BodyDef();
-        bodyDef2.type = BodyDef.BodyType.StaticBody;
-
-        //bodyDef2.position.set(0,
-//                h-10/PIXELS_TO_METERS);
-        bodyDef2.position.set(0,0);
-        FixtureDef fixtureDef2 = new FixtureDef();
-        EdgeShape edgeShape = new EdgeShape();
-        edgeShape.set(x1,y1,x2,y2);
-        fixtureDef2.shape = edgeShape;
-        bodyEdgeScreen = world.createBody(bodyDef2);
-        bodyEdgeScreen.createFixture(fixtureDef2);
-        edgeShape.dispose();
-    }
-
-    private float elapsed = 0;
-
     private void rotatePlayer(float mouseAngle){
         // getOrigin return the position of the center of the image, relative to the bottom left corner
         // in order to make the player rotate around it's center we need to find the coordinates of the image center
@@ -207,7 +186,6 @@ public class test extends ApplicationAdapter implements InputProcessor {
             {
                 newAngle = newAngle - 360;
             }
-//            playerSprite.setRotation(newAngle);
             playerBody.setTransform(playerBody.getPosition(), newAngle * MathUtils.degRad);
         }
     }
@@ -297,9 +275,6 @@ public class test extends ApplicationAdapter implements InputProcessor {
                         playerSprite.getWidth(), playerSprite.getHeight(), playerSprite.getScaleX(), playerSprite.
                                 getScaleY(), playerSprite.getRotation());
             batch.end();
-
-            System.out.println(playerSprite.getX());
-            System.out.println(playerSprite.getY());
 
 //            for (Rectangle rectangle : rectangles) {
 //                if (rectangle == null)

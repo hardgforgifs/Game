@@ -15,6 +15,6 @@ public class DesktopLauncher {
 		config.width = 1280;
 		config.height = 720;
 		//config.fullscreen = true;
-		new LwjglApplication(new test(), config);
+		new LwjglApplication(new DragonBoatRacing(), config);
 	}
 }
