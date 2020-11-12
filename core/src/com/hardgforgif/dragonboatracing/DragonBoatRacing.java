@@ -1,33 +1,44 @@
 package com.hardgforgif.dragonboatracing;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.hardgforgif.dragonboatracing.screens.MainMenuScreen;
+import com.hardgforgif.dragonboatracing.tools.GameCamera;
+import com.hardgforgif.dragonboatracing.tools.ScrollingBackground;
 
-public class DragonBoatRacing extends ApplicationAdapter {
-	SpriteBatch batch;
-	Texture img;
-	
+public class DragonBoatRacing extends Game {
+
+	public static final int WIDTH = 1280;
+	public static final int HEIGHT = 720;
+
+	public SpriteBatch batch;
+	public ScrollingBackground scrollingBackground;
+	public GameCamera cam;
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+		cam = new GameCamera(WIDTH, HEIGHT);
+		this.scrollingBackground = new ScrollingBackground();
+		this.setScreen(new MainMenuScreen(this));
 	}
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.draw(img, 0, 0);
-		batch.end();
+		batch.setProjectionMatrix(cam.combined());
+		super.render();
 	}
-	
+
 	@Override
-	public void dispose () {
-		batch.dispose();
-		img.dispose();
+	public void resize(int width, int height) {
+		this.scrollingBackground.resize(width, height);
+		cam.update(width, height);
+		super.resize(width, height);
 	}
 }

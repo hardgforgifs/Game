@@ -1,25 +1,20 @@
-## Instructions for cloning repository
-1. Download git at https://git-scm.com/downloads
-2. Open cmd and go to the folder in which you want to clone the project
-3. Type git clone https://github.com/hardgforgifs/Game.git
+# Dragon Boat Racing 2021
 
+The latest and greatest racing game!
 
-## Instructions for branching (this only needs to be done once, after you cloned the repository)
-1. Open cmd and got to the folder where you cloned the repository
-2. Type git checkout -b BranchName
- 
+## Developing (IntelliJ IDEA)
 
-## Instructions for pushing the code to the repo
-1. Open cmd and navigate to the repository location
-2. Type git add .
-3. Type git commit -m "Commit message"
-4. Type git push (origin BranchName)\
-All the code will be added to your branch of the repository. We will merge all this changes to master later.
+After cloning the repo you will want to open it in the IDE.
+
+Then you will want to open `Edit Run/Debug Configurations` available on the top bar.
+Add a new `application` then you will want to configure it with the following options:
+
+Main class: `com.hardgforgif.dragonboatracing.desktop.DesktopLauncher`  
+Working directory: `complete path to cloned repo\game\desktop\src\assets`  
+Use classpath of module: `game.desktop.main`  
+
+Then select the new configuration, and you will be able to run it.
 
 ## Dependencies
 
 * openjdk 15?
-
-## Releasing
-
-clone repo, and do other things
