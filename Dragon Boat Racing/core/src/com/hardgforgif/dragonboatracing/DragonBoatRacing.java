@@ -31,8 +31,8 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 
 	public Vector2 mousePos = new Vector2();
 	private ShapeRenderer shapeRenderer;
-//	Matrix4 debugMatrix;
-//	Box2DDebugRenderer debugRenderer;
+	Matrix4 debugMatrix;
+	Box2DDebugRenderer debugRenderer;
 
 	@Override
 	public void create() {
@@ -51,11 +51,13 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 		map = new Map("Map1/Map1.tmx", w);
 		map.createMapCollisions("CollisionLayerLeft", METERS_TO_PIXELS, world);
 		map.createMapCollisions("CollisionLayerRight", METERS_TO_PIXELS, world);
-		map.createLanes(METERS_TO_PIXELS);
+
 
 		// Calculate the ratio between pixels, meters and tiles
 		TILES_TO_METERS = map.getTilesToMetersRatio(METERS_TO_PIXELS);
 		PIXELS_TO_TILES = 1/(METERS_TO_PIXELS * TILES_TO_METERS);
+
+		map.createLanes(world, METERS_TO_PIXELS, PIXELS_TO_TILES);
 
 
 		// Initialize the camera
@@ -72,7 +74,7 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 		opponents[0].createBoatBody(world, 4f, 4f, "Boat1.json", METERS_TO_PIXELS);
 
 		Gdx.input.setInputProcessor(this);
-//		debugRenderer = new Box2DDebugRenderer();
+		debugRenderer = new Box2DDebugRenderer();
 	}
 
 	private void updateCamera(Player player) {
@@ -98,6 +100,12 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 		player.drawBoat(batch);
 		opponents[0].drawBoat(batch);
 
+		for (Lane lane : map.lanes)
+			for (Obstacle obstacle : lane.obstacles){
+				obstacle.drawObstacle(batch, METERS_TO_PIXELS);
+			}
+		System.out.println(player.boatSprite.getX());
+
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.setColor(Color.BLACK);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -110,9 +118,9 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 
 		updateCamera(player);
 
-//		debugMatrix = batch.getProjectionMatrix().cpy().scale(METERS_TO_PIXELS, METERS_TO_PIXELS, 0);
+		debugMatrix = batch.getProjectionMatrix().cpy().scale(METERS_TO_PIXELS, METERS_TO_PIXELS, 0);
 
-//		debugRenderer.render(world, debugMatrix);
+		debugRenderer.render(world, debugMatrix);
 	}
 
 	public void dispose() {

@@ -146,7 +146,6 @@ public class AI extends Boat{
 
         rotateBoat(targetAngle);
         boatSprite.setRotation((float)Math.toDegrees(boatBody.getAngle()));
-        System.out.println(boatSprite.getRotation());
 
 
         moveBoat(metersToPixels);
