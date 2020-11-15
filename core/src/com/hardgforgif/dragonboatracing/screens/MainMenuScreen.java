@@ -3,6 +3,7 @@ package com.hardgforgif.dragonboatracing.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.hardgforgif.dragonboatracing.DragonBoatRacing;
@@ -10,8 +11,9 @@ import com.hardgforgif.dragonboatracing.tools.ScrollingBackground;
 
 public class MainMenuScreen implements Screen {
 
-    private static final int LOGO_WIDTH = 200;
-    private static final int LOGO_HEIGHT = 100;
+    //Sets the dimensions for all the UI components
+    private static final int LOGO_WIDTH = 400;
+    private static final int LOGO_HEIGHT = 200;
     private static final int LOGO_Y = 450;
 
     private static final int PLAY_BUTTON_WIDTH = 300;
@@ -23,7 +25,6 @@ public class MainMenuScreen implements Screen {
     private static final int EXIT_BUTTON_Y = 100;
 
 
-
     final DragonBoatRacing game;
 
     Texture playButtonActive;
@@ -31,14 +32,16 @@ public class MainMenuScreen implements Screen {
     Texture exitButtonActive;
     Texture exitButtonInactive;
     Texture logo;
+    //Music current_music;
 
     public MainMenuScreen(final DragonBoatRacing game) {
         this.game = game;
-        playButtonActive = new Texture("play_button_active.png");
-        playButtonInactive = new Texture("play_button_inactive.png");
-        exitButtonActive = new Texture("exit_button_active.png");
-        exitButtonInactive = new Texture("exit_button_inactive.png");
-        logo = new Texture("logo.png");
+        playButtonActive = new Texture("PlaySelected.png");
+        playButtonInactive = new Texture("PlayUnselected.png");
+        exitButtonActive = new Texture("ExitSelected.png");
+        exitButtonInactive = new Texture("ExitUnselected.png");
+        logo = new Texture("Title.png");
+        game.current_music = Gdx.audio.newMusic(Gdx.files.internal("Vibing.ogg"));
 
         game.scrollingBackground.setSpeedFixed(true);
         game.scrollingBackground.setSpeed(ScrollingBackground.DEFAULT_SPEED);
@@ -68,7 +71,8 @@ public class MainMenuScreen implements Screen {
                         game.cam.getInputInGameWorld().y > PLAY_BUTTON_Y
                 ) {
                     mainMenuScreen.dispose();
-                    game.setScreen(new MainGameScreen(game));
+                    //CHANGE THIS BACK TO MAINGAMESCREEN
+                    game.setScreen(new BoatChoosingScreen(game));
                 }
 
                 return super.touchUp(screenX, screenY, pointer, button);
@@ -115,7 +119,14 @@ public class MainMenuScreen implements Screen {
             game.batch.draw(exitButtonInactive, x, EXIT_BUTTON_Y, EXIT_BUTTON_WIDTH, EXIT_BUTTON_HEIGHT);
         }
 
+
+
         game.batch.end();
+
+        //Keeps music looping whilst on this screen
+        if (game.current_music.isPlaying() == false) {
+            game.current_music.play();
+        }
     }
 
     @Override

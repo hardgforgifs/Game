@@ -11,6 +11,8 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.hardgforgif.dragonboatracing.screens.MainMenuScreen;
 import com.hardgforgif.dragonboatracing.tools.GameCamera;
 import com.hardgforgif.dragonboatracing.tools.ScrollingBackground;
+import com.hardgforgif.dragonboatracing.UI.OverallUI;
+import com.badlogic.gdx.audio.Music;
 
 public class DragonBoatRacing extends Game {
 
@@ -20,6 +22,7 @@ public class DragonBoatRacing extends Game {
 	public SpriteBatch batch;
 	public ScrollingBackground scrollingBackground;
 	public GameCamera cam;
+	public Music current_music;
 
 	@Override
 	public void create () {
