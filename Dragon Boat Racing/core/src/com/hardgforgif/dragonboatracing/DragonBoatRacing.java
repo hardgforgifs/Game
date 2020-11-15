@@ -14,8 +14,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Null;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class DragonBoatRacing extends ApplicationAdapter implements InputProcessor {
 	Player player;
@@ -73,8 +76,42 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 		opponents[0] = new AI(100, 100, 100, 100f, "Boat1.png", camera, map.lanes[1]);
 		opponents[0].createBoatBody(world, 4f, 4f, "Boat1.json", METERS_TO_PIXELS);
 
+		createContactListener();
+
 		Gdx.input.setInputProcessor(this);
 		debugRenderer = new Box2DDebugRenderer();
+	}
+
+	private final ArrayList<Body> toBeRemovedBodies = new ArrayList<>();
+
+	private void createContactListener(){
+		world.setContactListener(new ContactListener() {
+			@Override
+			public void beginContact(Contact contact) {
+				Fixture fixtureA = contact.getFixtureA();
+				Fixture fixtureB = contact.getFixtureB();
+				if (fixtureA.getBody().getUserData() instanceof Obstacle) {
+					toBeRemovedBodies.add(fixtureA.getBody());
+				} else if (fixtureA.getBody().getUserData() instanceof Obstacle) {
+					toBeRemovedBodies.add(fixtureB.getBody());
+				}
+			}
+
+			@Override
+			public void endContact(Contact contact) {
+
+			}
+
+			@Override
+			public void preSolve(Contact contact, Manifold manifold) {
+
+			}
+
+			@Override
+			public void postSolve(Contact contact, ContactImpulse contactImpulse) {
+
+			}
+		});
 	}
 
 	private void updateCamera(Player player) {
@@ -86,6 +123,16 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 	public void render() {
 		// Advance the game world physics
 		world.step(1f/60f, 6, 2);
+
+		for (Body body : toBeRemovedBodies){
+			for (Lane lane : map.lanes)
+				for (Obstacle obstacle : lane.obstacles)
+					if (obstacle.obstacleBody == body) {
+						obstacle.obstacleBody = null;
+					}
+					world.destroyBody(body);
+		}
+		toBeRemovedBodies.clear();
 
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -102,9 +149,10 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 
 		for (Lane lane : map.lanes)
 			for (Obstacle obstacle : lane.obstacles){
-				obstacle.drawObstacle(batch, METERS_TO_PIXELS);
+				if (obstacle.obstacleBody != null)
+					obstacle.drawObstacle(batch, METERS_TO_PIXELS);
 			}
-		System.out.println(player.boatSprite.getX());
+//		System.out.println(player.boatSprite.getX());
 
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.setColor(Color.BLACK);

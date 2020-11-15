@@ -51,6 +51,8 @@ public abstract class Boat {
         bodyDef.position.set(posX, posY);
         boatBody = world.createBody(bodyDef);
 
+        boatBody.setUserData(this);
+
         BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal(bodyFile));
 
         FixtureDef fixtureDef = new FixtureDef();
