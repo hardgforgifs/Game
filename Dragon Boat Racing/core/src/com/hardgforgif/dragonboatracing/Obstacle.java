@@ -25,10 +25,12 @@ public class Obstacle {
         obstacleSprite.scale(-0.8f);
 
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.type = BodyDef.BodyType.StaticBody;
 
         bodyDef.position.set(posX, posY);
         obstacleBody = world.createBody(bodyDef);
+
+        obstacleBody.setUserData(this);
 
         BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal(bodyFile));
 
