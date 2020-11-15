@@ -100,7 +100,7 @@ public class Map {
         leftLayer = tiledMap.getLayers().get("Lane1");
         rightLayer = tiledMap.getLayers().get("Lane2");
 
-        lanes[1] = new Lane(mapHeight, leftLayer, rightLayer, 10);
+        lanes[1] = new Lane(mapHeight, leftLayer, rightLayer, 30);
         lanes[1].constructBoundries(unitScale);
         lanes[1].spawnObstacles(world, mapHeight / pixelToTiles, metersToPixels);
 

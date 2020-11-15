@@ -33,7 +33,9 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 	public Vector2 mousePos = new Vector2();
 	public Vector2 clickPos = new Vector2();
 	private ShapeRenderer shapeRenderer;
-	Matrix4 debugMatrix;
+//	Matrix4 debugMatrix;
+
+	private ArrayList<Body> toBeRemovedBodies = new ArrayList<>();
 //	Box2DDebugRenderer debugRenderer;
 
 	UI gameUI;
@@ -82,7 +84,6 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 //		debugRenderer = new Box2DDebugRenderer();
 	}
 
-	private final ArrayList<Body> toBeRemovedBodies = new ArrayList<>();
 
 	private void createContactListener(){
 		world.setContactListener(new ContactListener() {
@@ -148,27 +149,36 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 
 
 			player.updatePlayer(mousePos, METERS_TO_PIXELS);
-//		System.out.println(player.boatSprite.getRotation());
+
 			opponents[0].updateAI(METERS_TO_PIXELS);
 
 			batch.setProjectionMatrix(camera.combined);
 			map.renderMap(camera);
 			player.drawBoat(batch);
 			opponents[0].drawBoat(batch);
+//			System.out.println(player.boatSprite.getY());
+//			System.out.println(mousePos.y);
+			shapeRenderer.setProjectionMatrix(camera.combined);
 
 			for (Lane lane : map.lanes)
 				for (Obstacle obstacle : lane.obstacles){
 					if (obstacle.obstacleBody != null)
 						obstacle.drawObstacle(batch, METERS_TO_PIXELS);
+						shapeRenderer.setColor(Color.RED);
+						shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+						shapeRenderer.circle(obstacle.obstacleSprite.getX() + obstacle.obstacleSprite.getWidth() / 2 - obstacle.obstacleSprite.getWidth() / 2 * obstacle.obstacleSprite.getScaleX(), obstacle.obstacleSprite.getY(), 5);
+						shapeRenderer.end();
 				}
-//			System.out.println(player.boatSprite.getX());
 
-//		shapeRenderer.setProjectionMatrix(camera.combined);
-//		shapeRenderer.setColor(Color.BLACK);
-//        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-//		shapeRenderer.circle(opponents[0].laneChecker.x, opponents[0].laneChecker.y, 5);
-//		shapeRenderer.end();
-//
+
+			shapeRenderer.setColor(Color.BLACK);
+			shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+			shapeRenderer.circle(opponents[0].leftLimit, opponents[0].boatSprite.getY() + opponents[0].boatSprite.getHeight() / 2, 5);
+			shapeRenderer.circle(opponents[0].rightLimit, opponents[0].boatSprite.getY() + opponents[0].boatSprite.getHeight() / 2, 5);
+			shapeRenderer.end();
+
+
+
 //        shapeRenderer.circle(player.leftLimit, player.boatSprite.getY() + player.boatSprite.getHeight() / 2, 5);
 //		shapeRenderer.circle(player.rightLimit, player.boatSprite.getY() + player.boatSprite.getHeight() / 2, 5);
 //        shapeRenderer.end();

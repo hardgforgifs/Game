@@ -8,13 +8,16 @@ import com.badlogic.gdx.math.Vector2;
 public class AI extends Boat{
 
     public Vector2 laneChecker;
+    public Vector2 objectChecker;
     private OrthographicCamera camera;
     private float targetAngle = 0f;
+    private boolean dodging = false;
+    private float detectedObstacleYPos;
 
     public AI(float robustness, float stamina, float handling, float speed, String textureName, OrthographicCamera camera, Lane lane) {
         super(robustness, stamina, handling, speed, textureName, lane);
         this.camera = camera;
-        this.turningSpeed = 0.1f;
+        this.turningSpeed = 0.25f;
     }
 
     @Override
@@ -120,15 +123,8 @@ public class AI extends Boat{
         return target;
     }
 
-    public void updateAI(float metersToPixels) {
+    private void stayInLane(float[] predictLimits){
 
-        boatSprite.setPosition((boatBody.getPosition().x * metersToPixels) - boatSprite.getWidth() / 2,
-                (boatBody.getPosition().y * metersToPixels) - boatSprite.getHeight() / 2);
-
-        //updateLimits();
-        laneChecker = getAIPredictionVector(400f, metersToPixels);
-
-        float[] predictLimits = getLimitsAt(laneChecker.y);
         float laneWidth = predictLimits[1] - predictLimits[0];
         float middleOfLane = predictLimits[0] + laneWidth / 2;
 
@@ -136,19 +132,82 @@ public class AI extends Boat{
             targetAngle = -15f;
 
         else if (laneChecker.x < middleOfLane - laneWidth / 4 && boatSprite.getRotation() > 0)
-                targetAngle = 0f;
+            targetAngle = 0f;
 
         if (laneChecker.x > predictLimits[1] && boatSprite.getRotation() == 0)
-                targetAngle = 15f;
+            targetAngle = 15f;
 
         else if (laneChecker.x > middleOfLane + laneWidth / 4  && boatSprite.getRotation() < 0)
-                targetAngle = 0f;
+            targetAngle = 0f;
 
         rotateBoat(targetAngle);
         boatSprite.setRotation((float)Math.toDegrees(boatBody.getAngle()));
+    }
 
+    private boolean obstaclesInRange(){
+        for (Obstacle obstacle : this.lane.obstacles){
+            float width = obstacle.obstacleSprite.getWidth() * obstacle.obstacleSprite.getScaleX();
+            float height = obstacle.obstacleSprite.getHeight() * obstacle.obstacleSprite.getScaleY();
+            float posX = obstacle.obstacleSprite.getX() + obstacle.obstacleSprite.getWidth() / 2 - width / 2;
+            float posY = obstacle.obstacleSprite.getY() + obstacle.obstacleSprite.getHeight() / 2 - height / 2;
+
+
+            if (objectChecker.x >= posX && objectChecker.x <= posX + width &&
+                    objectChecker.y >= posY && objectChecker.y <= posY + height){
+                detectedObstacleYPos = posY;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void dodgeObstacles(){
+        if (obstaclesInRange()){
+            float boatPosX = boatSprite.getX() + boatSprite.getWidth() / 2;
+            if (rightLimit - boatPosX < boatPosX - leftLimit){
+                targetAngle = 15f;
+            }
+            else
+                targetAngle = -15f;
+            dodging = true;
+            rotateBoat(targetAngle);
+            boatSprite.setRotation((float)Math.toDegrees(boatBody.getAngle()));
+
+        }
+    }
+
+
+    public void updateAI(float metersToPixels) {
+
+        boatSprite.setPosition((boatBody.getPosition().x * metersToPixels) - boatSprite.getWidth() / 2,
+                (boatBody.getPosition().y * metersToPixels) - boatSprite.getHeight() / 2);
+
+        //updateLimits();
+        laneChecker = getAIPredictionVector(400f, metersToPixels);
+        objectChecker = getAIPredictionVector(300f, metersToPixels);
+        float[] predictLimits = getLimitsAt(laneChecker.y);
+
+        dodgeObstacles();
+        if (dodging){
+            rotateBoat(targetAngle);
+            boatSprite.setRotation((float)Math.toDegrees(boatBody.getAngle()));
+
+            System.out.println(boatSprite.getRotation());
+//            System.out.println("testing");
+            float boatBottomLocation = boatSprite.getY() + boatSprite.getHeight() / 2 +
+                                        boatSprite.getHeight() / 2 * boatSprite.getScaleY();
+
+            if (boatBottomLocation >= detectedObstacleYPos)
+                dodging = false;
+
+        }
+        else{
+
+            stayInLane(predictLimits);
+        }
 
         moveBoat(metersToPixels);
+        updateLimits();
 
     }
 }
