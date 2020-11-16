@@ -41,7 +41,7 @@ public abstract class Boat {
     }
 
     // Creates a new boat at posX, posY meters
-    public void createBoatBody(World world, float posX, float posY, String bodyFile, float metersToPixels){
+    public void createBoatBody(World world, float posX, float posY, String bodyFile){
         boatSprite = new Sprite(boatTexture);
         boatSprite.scale(-0.8f);
 
@@ -58,7 +58,7 @@ public abstract class Boat {
         fixtureDef.restitution = 0f;
         fixtureDef.friction = 0f;
 
-        float scale = boatSprite.getWidth() / metersToPixels * boatSprite.getScaleX();
+        float scale = boatSprite.getWidth() / GameData.METERS_TO_PIXELS * boatSprite.getScaleX();
         loader.attachFixture(boatBody, "Name", fixtureDef, scale);
     }
 
@@ -108,7 +108,7 @@ public abstract class Boat {
     }
 
     // We need to apply forces so we will need to work in meters, so we need to pass the ratio
-    public abstract void moveBoat(float metersToPixels);
+    public abstract void moveBoat();
 
     public abstract void rotateBoat(float angle);
 }

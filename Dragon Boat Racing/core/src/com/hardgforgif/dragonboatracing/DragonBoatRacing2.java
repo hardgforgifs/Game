@@ -26,8 +26,6 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 	OrthographicCamera camera;
 	World world;
 
-	private final float METERS_TO_PIXELS = 100f;
-
 
 	public Vector2 mousePos = new Vector2();
 	public Vector2 clickPos = new Vector2();
@@ -54,15 +52,15 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 
 		// Initialize the map
 		map = new Map("Map1/Map1.tmx", w);
-		map.createMapCollisions("CollisionLayerLeft", METERS_TO_PIXELS, world);
-		map.createMapCollisions("CollisionLayerRight", METERS_TO_PIXELS, world);
+		map.createMapCollisions("CollisionLayerLeft", GameData.METERS_TO_PIXELS, world);
+		map.createMapCollisions("CollisionLayerRight", GameData.METERS_TO_PIXELS, world);
 
 
 		// Calculate the ratio between pixels, meters and tiles
-		GameData.TILES_TO_METERS = map.getTilesToMetersRatio(METERS_TO_PIXELS);
-		GameData.PIXELS_TO_TILES = 1/(METERS_TO_PIXELS * GameData.TILES_TO_METERS);
+		GameData.TILES_TO_METERS = map.getTilesToMetersRatio(GameData.METERS_TO_PIXELS);
+		GameData.PIXELS_TO_TILES = 1/(GameData.METERS_TO_PIXELS * GameData.TILES_TO_METERS);
 
-		map.createLanes(world, METERS_TO_PIXELS, GameData.PIXELS_TO_TILES);
+		map.createLanes(world);
 
 
 		// Initialize the camera
@@ -72,11 +70,11 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 
 		// Create the player boat
 		player = new Player(100, 100, 100, 100f, "Boat1.png", camera, map.lanes[0]);
-		player.createBoatBody(world, 2.3f, 4f, "Boat1.json", METERS_TO_PIXELS);
+		player.createBoatBody(world, 2.3f, 4f, "Boat1.json");
 
 		// Create the AI boat
 		opponents[0] = new AI(100, 100, 100, 100f, "Boat1.png", camera, map.lanes[1]);
-		opponents[0].createBoatBody(world, 4f, 4f, "Boat1.json", METERS_TO_PIXELS);
+		opponents[0].createBoatBody(world, 4f, 4f, "Boat1.json");
 
 		Gdx.input.setInputProcessor(this);
 		createContactListener();
@@ -143,13 +141,14 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 			toBeRemovedBodies.clear();
 //			gameUI = new RaceUI();
 //			gameUI.drawUI(batch);
+
 			// Advance the game world physics
 			world.step(1f/60f, 6, 2);
 
 
-			player.updatePlayer(mousePos, METERS_TO_PIXELS);
+			player.updatePlayer(mousePos);
 
-			opponents[0].updateAI(METERS_TO_PIXELS);
+			opponents[0].updateAI();
 
 			batch.setProjectionMatrix(camera.combined);
 			map.renderMap(camera);
@@ -162,7 +161,7 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 			for (Lane lane : map.lanes)
 				for (Obstacle obstacle : lane.obstacles){
 					if (obstacle.obstacleBody != null)
-						obstacle.drawObstacle(batch, METERS_TO_PIXELS);
+						obstacle.drawObstacle(batch);
 				}
 
 

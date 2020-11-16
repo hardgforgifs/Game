@@ -21,10 +21,10 @@ public class AI extends Boat{
     }
 
     @Override
-    public void moveBoat(float metersToPixels) {
+    public void moveBoat() {
         // Get the coordinates of the center of the boat
-        float originX = boatBody.getPosition().x * metersToPixels;
-        float originY = boatBody.getPosition().y * metersToPixels;
+        float originX = boatBody.getPosition().x * GameData.METERS_TO_PIXELS;
+        float originY = boatBody.getPosition().y * GameData.METERS_TO_PIXELS;
 
         // First we need to calculate the position of the playear's head (the front of the boat)
         // So we can move him based on this and not the center of the boat
@@ -87,10 +87,10 @@ public class AI extends Boat{
     }
 
 
-    private Vector2 getAIPredictionVector(float distance, float metersToPixels) {
+    private Vector2 getAIPredictionVector(float distance) {
         // Get the coordinates of the center of the boat
-        float originX = boatBody.getPosition().x * metersToPixels;
-        float originY = boatBody.getPosition().y * metersToPixels;
+        float originX = boatBody.getPosition().x * GameData.METERS_TO_PIXELS;
+        float originY = boatBody.getPosition().y * GameData.METERS_TO_PIXELS;
 
         // First we need to calculate the position of the playear's head (the front of the boat)
         // So we can move him based on this and not the center of the boat
@@ -177,14 +177,14 @@ public class AI extends Boat{
     }
 
 
-    public void updateAI(float metersToPixels) {
+    public void updateAI() {
 
-        boatSprite.setPosition((boatBody.getPosition().x * metersToPixels) - boatSprite.getWidth() / 2,
-                (boatBody.getPosition().y * metersToPixels) - boatSprite.getHeight() / 2);
+        boatSprite.setPosition((boatBody.getPosition().x * GameData.METERS_TO_PIXELS) - boatSprite.getWidth() / 2,
+                (boatBody.getPosition().y * GameData.METERS_TO_PIXELS) - boatSprite.getHeight() / 2);
 
         //updateLimits();
-        laneChecker = getAIPredictionVector(400f, metersToPixels);
-        objectChecker = getAIPredictionVector(300f, metersToPixels);
+        laneChecker = getAIPredictionVector(400f);
+        objectChecker = getAIPredictionVector(300f);
         float[] predictLimits = getLimitsAt(laneChecker.y);
 
         dodgeObstacles();
@@ -206,7 +206,7 @@ public class AI extends Boat{
             stayInLane(predictLimits);
         }
 
-        moveBoat(metersToPixels);
+        moveBoat();
         updateLimits();
 
     }

@@ -46,9 +46,9 @@ public class Obstacle {
                 (obstacleBody.getPosition().y * GameData.METERS_TO_PIXELS) - obstacleSprite.getHeight() / 2);
     }
 
-    public void drawObstacle(Batch batch, float metersToPixels){
+    public void drawObstacle(Batch batch){
         obstacleSprite.setPosition((obstacleBody.getPosition().x * GameData.METERS_TO_PIXELS) - obstacleSprite.getWidth() / 2,
-                (obstacleBody.getPosition().y * metersToPixels) - obstacleSprite.getHeight() / 2);
+                (obstacleBody.getPosition().y * GameData.METERS_TO_PIXELS) - obstacleSprite.getHeight() / 2);
         batch.begin();
         batch.draw(obstacleSprite, obstacleSprite.getX(), obstacleSprite.getY(), obstacleSprite.getOriginX(),
                 obstacleSprite.getOriginY(),

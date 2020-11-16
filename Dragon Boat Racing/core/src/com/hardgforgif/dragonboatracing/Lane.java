@@ -75,7 +75,7 @@ public class Lane {
         return lst;
     }
 
-    public void spawnObstacles(World world, float mapHeight, float metersToPixels){
+    public void spawnObstacles(World world, float mapHeight){
         int nrObstacles = obstacles.length;
         float segmentLength = mapHeight / nrObstacles;
         for (int i = 0; i < nrObstacles; i++){
@@ -91,7 +91,7 @@ public class Lane {
             float xPos = (float) (leftLimit + Math.random() * (rightLimit - leftLimit));
 
 
-            obstacles[i].createObstacleBody(world, xPos / metersToPixels, yPos / metersToPixels,
+            obstacles[i].createObstacleBody(world, xPos / GameData.METERS_TO_PIXELS, yPos / GameData.METERS_TO_PIXELS,
                     "Obstacles/Obstacle" + (randomIndex + 1) + ".json", scale);
         }
     }
