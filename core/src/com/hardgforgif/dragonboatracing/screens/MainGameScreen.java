@@ -25,8 +25,8 @@ public class MainGameScreen implements Screen {
     private BitmapFont position_font = new BitmapFont();
     private BitmapFont robustness_font = new BitmapFont();
     private BitmapFont stamina_font = new BitmapFont();
-    private Texture stamina = new Texture(Gdx.files.internal("Stamina_bar.png"));;
-    private Texture robustness  = new Texture(Gdx.files.internal("Robustness_bar.png"));;
+    private Texture stamina = new Texture(Gdx.files.internal("Stamina_bar.png"));
+    private Texture robustness  = new Texture(Gdx.files.internal("Robustness_bar.png"));
     private Sprite r_bar = new Sprite(robustness);
     private Sprite s_bar = new Sprite(stamina);
 

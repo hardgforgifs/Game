@@ -1,17 +1,10 @@
 package com.hardgforgif.dragonboatracing;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.hardgforgif.dragonboatracing.screens.MainMenuScreen;
 import com.hardgforgif.dragonboatracing.tools.GameCamera;
 import com.hardgforgif.dragonboatracing.tools.ScrollingBackground;
-import com.hardgforgif.dragonboatracing.UI.OverallUI;
 import com.badlogic.gdx.audio.Music;
 
 public class DragonBoatRacing extends Game {
