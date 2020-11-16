@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Random;
 
 import static com.badlogic.gdx.math.MathUtils.random;
 
@@ -78,7 +79,9 @@ public class Lane {
         int nrObstacles = obstacles.length;
         float segmentLength = mapHeight / nrObstacles;
         for (int i = 0; i < nrObstacles; i++){
-            obstacles[i] = new Obstacle("badlogic.jpg");
+            int randomIndex = new Random().nextInt(GameData.obstaclesScales.size());
+            float scale = GameData.obstaclesScales.get(randomIndex);
+            obstacles[i] = new Obstacle("Obstacles/Obstacle" + (randomIndex + 1) + ".png");
             float segmentStart = i * segmentLength;
             float yPos = (float) (segmentStart + Math.random() * segmentLength);
 
@@ -88,7 +91,8 @@ public class Lane {
             float xPos = (float) (leftLimit + Math.random() * (rightLimit - leftLimit));
 
 
-            obstacles[i].createObstacleBody(world, xPos / metersToPixels, yPos / metersToPixels, "obstacle.json", metersToPixels);
+            obstacles[i].createObstacleBody(world, xPos / metersToPixels, yPos / metersToPixels,
+                    "Obstacles/Obstacle" + (randomIndex + 1) + ".json", scale);
         }
     }
 

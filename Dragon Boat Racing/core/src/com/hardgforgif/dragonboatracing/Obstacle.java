@@ -20,9 +20,9 @@ public class Obstacle {
         obstacleTexture = new Texture(textureName);
     }
 
-    public void createObstacleBody(World world, float posX, float posY, String bodyFile, float metersToPixels){
+    public void createObstacleBody(World world, float posX, float posY, String bodyFile, float scale){
         obstacleSprite = new Sprite(obstacleTexture);
-        obstacleSprite.scale(-0.8f);
+        obstacleSprite.scale(scale);
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
@@ -39,15 +39,15 @@ public class Obstacle {
         fixtureDef.restitution = 0f;
         fixtureDef.friction = 0f;
 
-        float scale = obstacleSprite.getWidth() / metersToPixels * obstacleSprite.getScaleX();
+        scale = obstacleSprite.getWidth() / GameData.METERS_TO_PIXELS * obstacleSprite.getScaleX();
         loader.attachFixture(obstacleBody, "Name", fixtureDef, scale);
 
-        obstacleSprite.setPosition((obstacleBody.getPosition().x * metersToPixels) - obstacleSprite.getWidth() / 2,
-                (obstacleBody.getPosition().y * metersToPixels) - obstacleSprite.getHeight() / 2);
+        obstacleSprite.setPosition((obstacleBody.getPosition().x * GameData.METERS_TO_PIXELS) - obstacleSprite.getWidth() / 2,
+                (obstacleBody.getPosition().y * GameData.METERS_TO_PIXELS) - obstacleSprite.getHeight() / 2);
     }
 
     public void drawObstacle(Batch batch, float metersToPixels){
-        obstacleSprite.setPosition((obstacleBody.getPosition().x * metersToPixels) - obstacleSprite.getWidth() / 2,
+        obstacleSprite.setPosition((obstacleBody.getPosition().x * GameData.METERS_TO_PIXELS) - obstacleSprite.getWidth() / 2,
                 (obstacleBody.getPosition().y * metersToPixels) - obstacleSprite.getHeight() / 2);
         batch.begin();
         batch.draw(obstacleSprite, obstacleSprite.getX(), obstacleSprite.getY(), obstacleSprite.getOriginX(),

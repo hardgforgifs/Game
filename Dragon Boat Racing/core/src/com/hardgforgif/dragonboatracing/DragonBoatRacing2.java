@@ -27,8 +27,7 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 	World world;
 
 	private final float METERS_TO_PIXELS = 100f;
-	private float TILES_TO_METERS;
-	private float PIXELS_TO_TILES;
+
 
 	public Vector2 mousePos = new Vector2();
 	public Vector2 clickPos = new Vector2();
@@ -60,10 +59,10 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 
 
 		// Calculate the ratio between pixels, meters and tiles
-		TILES_TO_METERS = map.getTilesToMetersRatio(METERS_TO_PIXELS);
-		PIXELS_TO_TILES = 1/(METERS_TO_PIXELS * TILES_TO_METERS);
+		GameData.TILES_TO_METERS = map.getTilesToMetersRatio(METERS_TO_PIXELS);
+		GameData.PIXELS_TO_TILES = 1/(METERS_TO_PIXELS * GameData.TILES_TO_METERS);
 
-		map.createLanes(world, METERS_TO_PIXELS, PIXELS_TO_TILES);
+		map.createLanes(world, METERS_TO_PIXELS, GameData.PIXELS_TO_TILES);
 
 
 		// Initialize the camera
@@ -164,24 +163,14 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 				for (Obstacle obstacle : lane.obstacles){
 					if (obstacle.obstacleBody != null)
 						obstacle.drawObstacle(batch, METERS_TO_PIXELS);
-						shapeRenderer.setColor(Color.RED);
-						shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-						shapeRenderer.circle(obstacle.obstacleSprite.getX() + obstacle.obstacleSprite.getWidth() / 2 - obstacle.obstacleSprite.getWidth() / 2 * obstacle.obstacleSprite.getScaleX(), obstacle.obstacleSprite.getY(), 5);
-						shapeRenderer.end();
 				}
 
 
-			shapeRenderer.setColor(Color.BLACK);
-			shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-			shapeRenderer.circle(opponents[0].leftLimit, opponents[0].boatSprite.getY() + opponents[0].boatSprite.getHeight() / 2, 5);
-			shapeRenderer.circle(opponents[0].rightLimit, opponents[0].boatSprite.getY() + opponents[0].boatSprite.getHeight() / 2, 5);
-			shapeRenderer.end();
-
-
-
-//        shapeRenderer.circle(player.leftLimit, player.boatSprite.getY() + player.boatSprite.getHeight() / 2, 5);
-//		shapeRenderer.circle(player.rightLimit, player.boatSprite.getY() + player.boatSprite.getHeight() / 2, 5);
-//        shapeRenderer.end();
+//			shapeRenderer.setColor(Color.BLACK);
+//			shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+//			shapeRenderer.circle(opponents[0].leftLimit, opponents[0].boatSprite.getY() + opponents[0].boatSprite.getHeight() / 2, 5);
+//			shapeRenderer.circle(opponents[0].rightLimit, opponents[0].boatSprite.getY() + opponents[0].boatSprite.getHeight() / 2, 5);
+//			shapeRenderer.end();
 
 			updateCamera(player);
 
