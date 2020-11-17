@@ -81,7 +81,7 @@ public class MenuUI extends UI {
     }
 
     @Override
-    public void drawUI(Batch batch, Player playerBoat, float delta) {
+    public void drawUI(Batch batch, Player playerBoat) {
 
     }
 

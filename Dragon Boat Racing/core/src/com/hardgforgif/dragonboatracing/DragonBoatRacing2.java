@@ -16,8 +16,10 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class DragonBoatRacing2 extends ApplicationAdapter implements InputProcessor {
 	Player player;
@@ -37,9 +39,8 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 //	Matrix4 debugMatrix;
 
 	private ArrayList<Body> toBeRemovedBodies = new ArrayList<>();
+	private ArrayList<Body> toBeUpdatedHealthBoats = new ArrayList<>();
 //	Box2DDebugRenderer debugRenderer;
-
-	UI gameUI;
 
 	@Override
 	public void create() {
@@ -75,11 +76,14 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 
 		// Create the player boat
 		player = new Player(100, 120, 100, 100f, "Boat1.png", map.lanes[0]);
-		player.createBoatBody(world, 2.3f, 4f, "Boat1.json");
+		player.createBoatBody(world, GameData.startingPoints[0][0], GameData.startingPoints[0][1], "Boat1.json");
 
-		// Create the AI boat
-		opponents[0] = new AI(100, 100, 100, 100f, "Boat1.png", camera, map.lanes[1]);
-		opponents[0].createBoatBody(world, 4f, 4f, "Boat1.json");
+		// Create the AI boats
+		for (int i = 1; i <= 3; i++){
+			opponents[i - 1] = new AI(100, 100, 100, 100f, "Boat1.png", camera, map.lanes[i]);
+			opponents[i - 1].createBoatBody(world, GameData.startingPoints[i][0], GameData.startingPoints[i][1], "Boat1.json");
+		}
+
 
 
 		Gdx.input.setInputProcessor(this);
@@ -96,8 +100,14 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 				Fixture fixtureB = contact.getFixtureB();
 				if (fixtureA.getBody().getUserData() instanceof Obstacle) {
 					toBeRemovedBodies.add(fixtureA.getBody());
-				} else if (fixtureA.getBody().getUserData() instanceof Obstacle) {
+				} else if (fixtureB.getBody().getUserData() instanceof Obstacle) {
 					toBeRemovedBodies.add(fixtureB.getBody());
+				}
+
+				if (fixtureA.getBody().getUserData() instanceof Boat) {
+					toBeUpdatedHealthBoats.add(fixtureA.getBody());
+				} else if (fixtureB.getBody().getUserData() instanceof Boat) {
+					toBeUpdatedHealthBoats.add(fixtureB.getBody());
 				}
 			}
 
@@ -144,27 +154,34 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 						}
 				world.destroyBody(body);
 			}
+			for (Body body : toBeUpdatedHealthBoats){
+				if (player.boatBody == body)
+					player.loseRobustness();
+
+				for (Boat boat : opponents)
+					if (boat.boatBody == body) {
+						boat.loseRobustness();
+					}
+			}
 			toBeRemovedBodies.clear();
-			float delta = Gdx.graphics.getDeltaTime();
-			if (delta > 1f)
-				delta = 0f;
-
-
+			toBeUpdatedHealthBoats.clear();
 
 			// Advance the game world physics
 			world.step(1f/60f, 6, 2);
 
+			GameData.currentTimer += Gdx.graphics.getDeltaTime();
+			player.updatePlayer(pressedKeys, Gdx.graphics.getDeltaTime());
 
-			player.updatePlayer(pressedKeys, delta);
-
-			opponents[0].updateAI();
+			for (AI opponent : opponents)
+				opponent.updateAI();
 
 
 
 			batch.setProjectionMatrix(camera.combined);
 			map.renderMap(camera);
 			player.drawBoat(batch);
-			opponents[0].drawBoat(batch);
+			for (AI opponent : opponents)
+				opponent.drawBoat(batch);
 //			System.out.println(player.boatSprite.getY());
 //			System.out.println(mousePos.y);
 			shapeRenderer.setProjectionMatrix(camera.combined);
@@ -181,7 +198,7 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 //			shapeRenderer.circle(opponents[0].leftLimit, opponents[0].boatSprite.getY() + opponents[0].boatSprite.getHeight() / 2, 5);
 //			shapeRenderer.circle(opponents[0].rightLimit, opponents[0].boatSprite.getY() + opponents[0].boatSprite.getHeight() / 2, 5);
 //			shapeRenderer.end();
-			GameData.currentUI.drawUI(UIbatch, player, delta);
+			GameData.currentUI.drawUI(UIbatch, player);
 			updateCamera(player);
 
 //			debugMatrix = batch.getProjectionMatrix().cpy().scale(METERS_TO_PIXELS, METERS_TO_PIXELS, 0);

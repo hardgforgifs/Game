@@ -2,8 +2,7 @@ package com.hardgforgif.dragonboatracing;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -25,6 +24,9 @@ public abstract class Boat {
     Texture boatTexture;
     Body boatBody;
 
+    TextureAtlas textureAtlas;
+    Animation animation;
+
     Lane lane;
     float leftLimit;
     float rightLimit;
@@ -37,6 +39,8 @@ public abstract class Boat {
         this.speed = speed;
 
         boatTexture = new Texture(textureName);
+        textureAtlas = new TextureAtlas(Gdx.files.internal("Boats/Boat2.atlas"));
+        animation = new Animation(1/15f, textureAtlas.getRegions());
 
         this.lane = lane;
     }
@@ -52,6 +56,8 @@ public abstract class Boat {
         bodyDef.position.set(posX, posY);
         boatBody = world.createBody(bodyDef);
 
+        boatBody.setUserData(this);
+
         BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal(bodyFile));
 
         FixtureDef fixtureDef = new FixtureDef();
@@ -65,7 +71,7 @@ public abstract class Boat {
 
     public void drawBoat(Batch batch){
         batch.begin();
-        batch.draw(boatSprite, boatSprite.getX(), boatSprite.getY(), boatSprite.getOriginX(),
+        batch.draw((TextureRegion) animation.getKeyFrame(GameData.currentTimer, true), boatSprite.getX(), boatSprite.getY(), boatSprite.getOriginX(),
                 boatSprite.getOriginY(),
                 boatSprite.getWidth(), boatSprite.getHeight(), boatSprite.getScaleX(), boatSprite.
                         getScaleY(), boatSprite.getRotation());
@@ -106,6 +112,10 @@ public abstract class Boat {
         }
         lst[1] = lane.rightBoundry[i - 1][1];
         return lst;
+    }
+
+    public void loseRobustness(){
+        this.robustness -= 10f;
     }
 
     // We need to apply forces so we will need to work in meters, so we need to pass the ratio

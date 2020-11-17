@@ -1,0 +1,75 @@
+Boat1.png
+size: 1890, 842
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+001
+  rotate: false
+  xy: 0, 0
+  size: 189, 842
+  orig: 189, 842
+  offset: 0, 0
+  index: -1
+002
+  rotate: false
+  xy: 189, 0
+  size: 189, 842
+  orig: 189, 842
+  offset: 0, 0
+  index: -1
+003
+  rotate: false
+  xy: 378, 0
+  size: 189, 842
+  orig: 189, 842
+  offset: 0, 0
+  index: -1
+004
+  rotate: false
+  xy: 567, 0
+  size: 189, 842
+  orig: 189, 842
+  offset: 0, 0
+  index: -1
+005
+  rotate: false
+  xy: 756, 0
+  size: 189, 842
+  orig: 189, 842
+  offset: 0, 0
+  index: -1
+006
+  rotate: false
+  xy: 945, 0
+  size: 189, 842
+  orig: 189, 842
+  offset: 0, 0
+  index: -1
+007
+  rotate: false
+  xy: 1134, 0
+  size: 189, 842
+  orig: 189, 842
+  offset: 0, 0
+  index: -1
+008
+  rotate: false
+  xy: 1323, 0
+  size: 189, 842
+  orig: 189, 842
+  offset: 0, 0
+  index: -1
+009
+  rotate: false
+  xy: 1512, 0
+  size: 189, 842
+  orig: 189, 842
+  offset: 0, 0
+  index: -1
+010
+  rotate: false
+  xy: 1701, 0
+  size: 189, 842
+  orig: 189, 842
+  offset: 0, 0
+  index: -1

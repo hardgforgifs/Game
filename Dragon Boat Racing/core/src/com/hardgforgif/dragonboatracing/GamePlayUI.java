@@ -11,6 +11,7 @@ public class GamePlayUI extends UI{
     private BitmapFont position_label;
     private BitmapFont robustness_label;
     private BitmapFont stamina_label;
+    private BitmapFont timer_label;
     private Texture stamina;
     private Texture robustness;
     private Sprite r_bar;
@@ -22,6 +23,7 @@ public class GamePlayUI extends UI{
         position_label = new BitmapFont();
         robustness_label = new BitmapFont();
         stamina_label = new BitmapFont();
+        timer_label = new BitmapFont();
         stamina = new Texture(Gdx.files.internal("Stamina_bar.png"));
         robustness  = new Texture(Gdx.files.internal("Robustness_bar.png"));
         r_bar = new Sprite(robustness);
@@ -41,13 +43,10 @@ public class GamePlayUI extends UI{
     }
 
     @Override
-    public void drawUI(Batch batch, Player playerBoat, float delta) {
+    public void drawUI(Batch batch, Player playerBoat) {
         s_bar.setSize(playerBoat.stamina, 30);
-        r_bar.setSize(100,30);
-        //Changes size of the bar based on the player's stats
-        //These lines will include the actual functionality for the Game UI, replace the setSize statements above with these
-        //r_bar.setSize(60 * (p_boat.robustness/players boats max robustness), 30);
-        //s_bar.setSize(60 * (p_boat.stamina/players boats max stamina), 30);
+        r_bar.setSize(playerBoat.robustness,30);
+
         batch.begin();
         s_bar.draw(batch);
         r_bar.draw(batch);
@@ -55,6 +54,7 @@ public class GamePlayUI extends UI{
         stamina_label.draw(batch, "Stamina", 10,170);
         //Replace player position with the player's position in the race
         position_label.draw(batch, player_position + "/8", 1225, 700);
+        timer_label.draw(batch, String.valueOf(Math.round(GameData.currentTimer * 10.0) / 10.0), 10, 700);
         batch.end();
     }
 
