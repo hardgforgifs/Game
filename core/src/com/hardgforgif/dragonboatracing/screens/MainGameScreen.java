@@ -150,6 +150,6 @@ public class MainGameScreen implements Screen {
 
     @Override
     public void dispose() {
-        //Dispose of components?
+
     }
 }

@@ -106,10 +106,10 @@ public class BoatChoosingScreen implements Screen {
         r_bar.setSize(full_bar_width,30);
         m_bar.setSize(full_bar_width,30);
         a_bar.setSize(full_bar_width,30);
-        r_bar.setPosition(500,350);
-        s_bar.setPosition(500,500);
-        a_bar.setPosition(500,450);
-        m_bar.setPosition(500,400);
+        r_bar.setPosition(510,350);
+        s_bar.setPosition(510,480);
+        a_bar.setPosition(510,450);
+        m_bar.setPosition(510,400);
 
 
         game.batch.begin();
