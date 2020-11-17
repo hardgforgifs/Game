@@ -11,11 +11,10 @@ import com.hardgforgif.dragonboatracing.standaloneprojects.moveableplayer.BodyEd
 import javafx.scene.Camera;
 
 public class Player extends Boat{
-    private OrthographicCamera camera;
 
-    public Player(float robustness, float stamina, float handling, float speed, String textureName, OrthographicCamera camera, Lane lane) {
+    public Player(float robustness, float stamina, float handling, float speed, String textureName, Lane lane) {
         super(robustness, stamina, handling, speed, textureName, lane);
-        this.camera = camera;
+        this.turningSpeed = 0.25f;
     }
 
     @Override
@@ -65,67 +64,42 @@ public class Player extends Boat{
     }
 
     @Override
-    public void rotateBoat(float mouseAngle) {
-        // Calculate the difference between the angle of the mouse and the current rotation of the boat
-        float angleDifference = mouseAngle - boatBody.getAngle() * MathUtils.radDeg;
+    public void rotateBoat(float angle) {
+        // Calculate the difference between the target angle and the current rotation of the boat
+        float angleDifference = angle - boatBody.getAngle() * MathUtils.radDeg;
 
-        // If the angle is really small, set the player to face the mouse
         if (Math.abs(angleDifference) < turningSpeed) {
-            boatBody.setTransform(boatBody.getPosition(), mouseAngle * MathUtils.degRad);
+            boatBody.setTransform(boatBody.getPosition(), angle * MathUtils.degRad);
+            return;
         }
 
-        else {
-            // Create the new angle we want the player to be rotated to every frame, based on the turning speed
-            float newAngle = boatSprite.getRotation();
+        // Create the new angle we want the player to be rotated to every frame, based on the turning speed
+        float newAngle = boatSprite.getRotation();
 
-            // We need to manage turning direction based on the difference in angles
-            // If the difference is smaller than -180, it's faster to rotate clockwise
-            if (angleDifference < -180)
-                newAngle += turningSpeed;
-            // if the difference is greater than 180, it's faster to rotate counter-clockwise
-            else if (angleDifference > 180)
-                newAngle += turningSpeed * (-1);
-            // otherwise rotate in the direction given by the sign of angleDifference
-            else
-                newAngle += turningSpeed * (angleDifference / Math.abs(angleDifference));
+        if (angleDifference < 0)
+            newAngle += turningSpeed * (-1);
+        else if (angleDifference > 0)
+            newAngle += turningSpeed;
 
-            // we want to keep the player rotation between 0 and 360 at all times
-            if(newAngle < 0)
-            {
-                newAngle = 360 + newAngle;
-            }
-            if(newAngle > 360)
-            {
-                newAngle = newAngle - 360;
-            }
-
-            boatBody.setTransform(boatBody.getPosition(), newAngle * MathUtils.degRad);
-        }
+        boatBody.setTransform(boatBody.getPosition(), newAngle * MathUtils.degRad);
     }
 
-    // Returns the angle between the mouse and the player's center
-    private float getMouseAngle(Vector2 mousePos, float originX, float originY) {
-        float mouseAngle = MathUtils.atan2(mousePos.y - originY, mousePos.x - originX) * MathUtils.radDeg - 90;
-        if(mouseAngle < 0)
-        {
-            mouseAngle = 360 + mouseAngle;
-        }
-        return mouseAngle;
-    }
+    public void updatePlayer(boolean[] pressedKeys, float delta) {
+        if (pressedKeys[1])
+            targetAngle = 90f;
+        else if (pressedKeys[3])
+            targetAngle = -90f;
+        else
+            targetAngle = 0f;
 
-    public void updatePlayer(Vector2 mousePos) {
-        float originX = boatBody.getPosition().x * GameData.METERS_TO_PIXELS;
-        float originY = boatBody.getPosition().y * GameData.METERS_TO_PIXELS;
-
-        float mouseAngle = getMouseAngle(mousePos, originX, originY);
-        rotateBoat(mouseAngle);
+        rotateBoat(targetAngle);
 
         boatSprite.setRotation((float)Math.toDegrees(boatBody.getAngle()));
         boatSprite.setPosition((boatBody.getPosition().x * GameData.METERS_TO_PIXELS) - boatSprite.getWidth() / 2,
                 (boatBody.getPosition().y * GameData.METERS_TO_PIXELS) - boatSprite.getHeight() / 2);
 
-
         moveBoat();
         updateLimits();
+        stamina -= 0.8 * delta;
     }
 }

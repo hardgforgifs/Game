@@ -192,8 +192,6 @@ public class AI extends Boat{
             rotateBoat(targetAngle);
             boatSprite.setRotation((float)Math.toDegrees(boatBody.getAngle()));
 
-            System.out.println(boatSprite.getRotation());
-//            System.out.println("testing");
             float boatBottomLocation = boatSprite.getY() + boatSprite.getHeight() / 2 +
                                         boatSprite.getHeight() / 2 * boatSprite.getScaleY();
 

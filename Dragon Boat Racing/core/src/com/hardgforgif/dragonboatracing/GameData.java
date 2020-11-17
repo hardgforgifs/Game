@@ -17,4 +17,5 @@ public class GameData {
     public static float PIXELS_TO_TILES;
 
     public static List<Float> obstaclesScales = Arrays.asList(-0.8f, 0f, 0f, 0f, 0f, -0.8f);
+    public static UI currentUI = new MenuUI();
 }

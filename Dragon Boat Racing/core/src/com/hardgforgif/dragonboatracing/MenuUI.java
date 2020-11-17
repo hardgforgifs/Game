@@ -81,6 +81,11 @@ public class MenuUI extends UI {
     }
 
     @Override
+    public void drawUI(Batch batch, Player playerBoat, float delta) {
+
+    }
+
+    @Override
     public void getInput(float screenWidth, Vector2 clickPos) {
         float x = screenWidth / 2 - PLAY_BUTTON_WIDTH / 2;
         if (
@@ -93,6 +98,7 @@ public class MenuUI extends UI {
             GameData.gamePlay = true;
             GameData.music.stop();
             GameData.music = Gdx.audio.newMusic(Gdx.files.internal("Love_Drama.ogg"));
+            GameData.currentUI = new GamePlayUI();
         }
 
         x = screenWidth / 2 - EXIT_BUTTON_WIDTH / 2;

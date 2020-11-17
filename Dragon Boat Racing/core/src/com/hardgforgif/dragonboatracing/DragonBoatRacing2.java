@@ -2,6 +2,7 @@ package com.hardgforgif.dragonboatracing;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -23,6 +24,7 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 	AI[] opponents = new AI[3];
 	Map map;
 	Batch batch;
+	Batch UIbatch;
 	OrthographicCamera camera;
 	World world;
 
@@ -30,6 +32,8 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 	public Vector2 mousePos = new Vector2();
 	public Vector2 clickPos = new Vector2();
 	private ShapeRenderer shapeRenderer;
+
+	private boolean[] pressedKeys = new boolean[4]; // W, A, S, D buttons status
 //	Matrix4 debugMatrix;
 
 	private ArrayList<Body> toBeRemovedBodies = new ArrayList<>();
@@ -42,6 +46,7 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 		shapeRenderer = new ShapeRenderer();
 		// Initialize the sprite batch
 		batch = new SpriteBatch();
+		UIbatch = new SpriteBatch();
 
 		// Initialize the physics gameWorld
 		world = new World(new Vector2(0f, 0f), true);
@@ -69,12 +74,13 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 
 
 		// Create the player boat
-		player = new Player(100, 100, 100, 100f, "Boat1.png", camera, map.lanes[0]);
+		player = new Player(100, 120, 100, 100f, "Boat1.png", map.lanes[0]);
 		player.createBoatBody(world, 2.3f, 4f, "Boat1.json");
 
 		// Create the AI boat
 		opponents[0] = new AI(100, 100, 100, 100f, "Boat1.png", camera, map.lanes[1]);
 		opponents[0].createBoatBody(world, 4f, 4f, "Boat1.json");
+
 
 		Gdx.input.setInputProcessor(this);
 		createContactListener();
@@ -123,10 +129,10 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		if (GameData.mainMenu){
-			gameUI = new MenuUI();
+//			gameUI = new MenuUI();
 
-			gameUI.drawUI(batch, mousePos, Gdx.graphics.getWidth(), Gdx.graphics.getDeltaTime());
-			gameUI.getInput(Gdx.graphics.getWidth(), clickPos);
+			GameData.currentUI.drawUI(UIbatch, mousePos, Gdx.graphics.getWidth(), Gdx.graphics.getDeltaTime());
+			GameData.currentUI.getInput(Gdx.graphics.getWidth(), clickPos);
 		}
 
 		else if(GameData.gamePlay){
@@ -139,16 +145,21 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 				world.destroyBody(body);
 			}
 			toBeRemovedBodies.clear();
-//			gameUI = new RaceUI();
-//			gameUI.drawUI(batch);
+			float delta = Gdx.graphics.getDeltaTime();
+			if (delta > 1f)
+				delta = 0f;
+
+
 
 			// Advance the game world physics
 			world.step(1f/60f, 6, 2);
 
 
-			player.updatePlayer(mousePos);
+			player.updatePlayer(pressedKeys, delta);
 
 			opponents[0].updateAI();
+
+
 
 			batch.setProjectionMatrix(camera.combined);
 			map.renderMap(camera);
@@ -170,7 +181,7 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 //			shapeRenderer.circle(opponents[0].leftLimit, opponents[0].boatSprite.getY() + opponents[0].boatSprite.getHeight() / 2, 5);
 //			shapeRenderer.circle(opponents[0].rightLimit, opponents[0].boatSprite.getY() + opponents[0].boatSprite.getHeight() / 2, 5);
 //			shapeRenderer.end();
-
+			GameData.currentUI.drawUI(UIbatch, player, delta);
 			updateCamera(player);
 
 //			debugMatrix = batch.getProjectionMatrix().cpy().scale(METERS_TO_PIXELS, METERS_TO_PIXELS, 0);
@@ -188,12 +199,28 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 
 	@Override
 	public boolean keyDown(int keycode) {
-		return false;
+		if (keycode == Input.Keys.W)
+			pressedKeys[0] = true;
+		if (keycode == Input.Keys.A)
+			pressedKeys[1] = true;
+		if (keycode == Input.Keys.S)
+			pressedKeys[2] = true;
+		if (keycode == Input.Keys.D)
+			pressedKeys[3] = true;
+		return true;
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
-		return false;
+		if (keycode == Input.Keys.W)
+			pressedKeys[0] = false;
+		if (keycode == Input.Keys.A)
+			pressedKeys[1] = false;
+		if (keycode == Input.Keys.S)
+			pressedKeys[2] = false;
+		if (keycode == Input.Keys.D)
+			pressedKeys[3] = false;
+		return true;
 	}
 
 	@Override

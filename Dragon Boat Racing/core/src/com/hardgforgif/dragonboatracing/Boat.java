@@ -19,6 +19,7 @@ public abstract class Boat {
     float speed;
     float acceleration;
     float turningSpeed = 2f;
+    float targetAngle = 0f;
 
     Sprite boatSprite;
     Texture boatTexture;
