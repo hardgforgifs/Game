@@ -1,72 +1,72 @@
-Boat2.png
+Boat3.png
 size: 1600, 766
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-Boat2Frame1
+Boat4Frame1
   rotate: false
   xy: 0, 0
   size: 160, 766
   orig: 160, 766
   offset: 0, 0
   index: -1
-Boat2Frame2
+Boat4Frame2
   rotate: false
   xy: 160, 0
   size: 160, 766
   orig: 160, 766
   offset: 0, 0
   index: -1
-Boat2Frame3
+Boat4Frame3
   rotate: false
   xy: 320, 0
   size: 160, 766
   orig: 160, 766
   offset: 0, 0
   index: -1
-Boat2Frame4
+Boat4Frame4
   rotate: false
   xy: 480, 0
   size: 160, 766
   orig: 160, 766
   offset: 0, 0
   index: -1
-Boat2Frame5
+Boat4Frame5
   rotate: false
   xy: 640, 0
   size: 160, 766
   orig: 160, 766
   offset: 0, 0
   index: -1
-Boat2Frame6
+Boat4Frame6
   rotate: false
   xy: 800, 0
   size: 160, 766
   orig: 160, 766
   offset: 0, 0
   index: -1
-Boat2Frame7
+Boat4Frame7
   rotate: false
   xy: 960, 0
   size: 160, 766
   orig: 160, 766
   offset: 0, 0
   index: -1
-Boat2Frame8
+Boat4Frame8
   rotate: false
   xy: 1120, 0
   size: 160, 766
   orig: 160, 766
   offset: 0, 0
   index: -1
-Boat2Frame9
+Boat4Frame9
   rotate: false
   xy: 1280, 0
   size: 160, 766
   orig: 160, 766
   offset: 0, 0
   index: -1
-Boat2Frame10
+Boat4Frame10
   rotate: false
   xy: 1440, 0
   size: 160, 766

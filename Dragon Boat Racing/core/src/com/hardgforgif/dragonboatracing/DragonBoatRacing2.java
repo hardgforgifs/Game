@@ -172,8 +172,9 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 			GameData.currentTimer += Gdx.graphics.getDeltaTime();
 			player.updatePlayer(pressedKeys, Gdx.graphics.getDeltaTime());
 
-			for (AI opponent : opponents)
-				opponent.updateAI();
+//			for (AI opponent : opponents)
+//				opponent.updateAI();
+			opponents[0].updateAI();
 
 
 
