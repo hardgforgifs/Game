@@ -74,17 +74,6 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 		camera.setToOrtho(false, w, h);
 
 
-		// Create the player boat
-		player = new Player(100, 120, 100, 100f, "Boat1.png", map.lanes[0]);
-		player.createBoatBody(world, GameData.startingPoints[0][0], GameData.startingPoints[0][1], "Boat1.json");
-
-		// Create the AI boats
-		for (int i = 1; i <= 3; i++){
-			opponents[i - 1] = new AI(100, 100, 100, 100f, "Boat1.png", camera, map.lanes[i]);
-			opponents[i - 1].createBoatBody(world, GameData.startingPoints[i][0], GameData.startingPoints[i][1], "Boat1.json");
-		}
-
-
 
 		Gdx.input.setInputProcessor(this);
 		createContactListener();
@@ -139,13 +128,36 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		if (GameData.mainMenu){
-//			gameUI = new MenuUI();
+			GameData.currentUI.drawUI(UIbatch, mousePos, Gdx.graphics.getWidth(), Gdx.graphics.getDeltaTime());
+			GameData.currentUI.getInput(Gdx.graphics.getWidth(), clickPos);
+		}
 
+		else if (GameData.choosingBoat){
 			GameData.currentUI.drawUI(UIbatch, mousePos, Gdx.graphics.getWidth(), Gdx.graphics.getDeltaTime());
 			GameData.currentUI.getInput(Gdx.graphics.getWidth(), clickPos);
 		}
 
 		else if(GameData.gamePlay){
+			if (player == null){
+				// Create the player boat
+				int playerBoatType = GameData.boatTypes[0];
+
+				player = new Player(GameData.boatsStats[playerBoatType][0], GameData.boatsStats[playerBoatType][1],
+						GameData.boatsStats[playerBoatType][2], GameData.boatsStats[playerBoatType][3],
+						playerBoatType, map.lanes[0]);
+				player.createBoatBody(world, GameData.startingPoints[0][0], GameData.startingPoints[0][1], "Boat1.json");
+
+				// Create the AI boats
+				for (int i = 1; i <= 3; i++){
+					int AIBoatType = GameData.boatTypes[i];
+
+					opponents[i - 1] = new AI(GameData.boatsStats[AIBoatType][0], GameData.boatsStats[AIBoatType][1],
+							GameData.boatsStats[AIBoatType][2], GameData.boatsStats[AIBoatType][3],
+							AIBoatType, camera, map.lanes[i]);
+					opponents[i - 1].createBoatBody(world, GameData.startingPoints[i][0], GameData.startingPoints[i][1], "Boat1.json");
+				}
+			}
+
 			for (Body body : toBeRemovedBodies){
 				for (Lane lane : map.lanes)
 					for (Obstacle obstacle : lane.obstacles)
@@ -155,12 +167,16 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 				world.destroyBody(body);
 			}
 			for (Body body : toBeUpdatedHealthBoats){
-				if (player.boatBody == body)
+				if (player.boatBody == body){
 					player.loseRobustness();
+					player.current_speed -= 25f;
+				}
+
 
 				for (Boat boat : opponents)
 					if (boat.boatBody == body) {
 						boat.loseRobustness();
+						boat.current_speed -= 25f;
 					}
 			}
 			toBeRemovedBodies.clear();
@@ -172,9 +188,8 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 			GameData.currentTimer += Gdx.graphics.getDeltaTime();
 			player.updatePlayer(pressedKeys, Gdx.graphics.getDeltaTime());
 
-//			for (AI opponent : opponents)
-//				opponent.updateAI();
-			opponents[0].updateAI();
+			for (AI opponent : opponents)
+				opponent.updateAI();
 
 
 

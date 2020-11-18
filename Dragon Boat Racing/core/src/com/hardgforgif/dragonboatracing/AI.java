@@ -15,14 +15,17 @@ public class AI extends Boat{
     private boolean turning = false;
     private float detectedObstacleYPos;
 
-    public AI(float robustness, float stamina, float handling, float speed, String textureName, OrthographicCamera camera, Lane lane) {
-        super(robustness, stamina, handling, speed, textureName, lane);
+    public AI(float robustness, float stamina, float handling, float speed, int boatType, OrthographicCamera camera, Lane lane) {
+        super(robustness, stamina, handling, speed, boatType, lane);
         this.camera = camera;
-        this.turningSpeed = 0.25f;
     }
 
     @Override
     public void moveBoat() {
+        current_speed += 0.15f * (acceleration/90);
+        if (current_speed > speed)
+            current_speed = speed;
+
         // Get the coordinates of the center of the boat
         float originX = boatBody.getPosition().x * GameData.METERS_TO_PIXELS;
         float originY = boatBody.getPosition().y * GameData.METERS_TO_PIXELS;
@@ -60,7 +63,7 @@ public class AI extends Boat{
         Vector2 movement = new Vector2();
 
         direction.set(target).sub(boatHeadPos).nor();
-        velocity.set(direction).scl(speed);
+        velocity.set(direction).scl(current_speed);
         movement.set(velocity).scl(Gdx.graphics.getDeltaTime());
 
         boatBody.setLinearVelocity(movement);
@@ -178,7 +181,6 @@ public class AI extends Boat{
 
     private void dodgeObstacles(){
         if (obstaclesInRange()){
-            System.out.println("object in range");
             float boatPosX = boatSprite.getX() + boatSprite.getWidth() / 2;
             if (turning){
 

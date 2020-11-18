@@ -34,7 +34,7 @@ public class MenuUI extends UI {
 
 
     public MenuUI(){
-        this.scrollingBackground.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        scrollingBackground.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         scrollingBackground.setSpeedFixed(true);
         scrollingBackground.setSpeed(ScrollingBackground.DEFAULT_SPEED);
 
@@ -95,10 +95,10 @@ public class MenuUI extends UI {
                         clickPos.y > PLAY_BUTTON_Y
         ) {
             GameData.mainMenu = false;
-            GameData.gamePlay = true;
+            GameData.choosingBoat = true;
             GameData.music.stop();
             GameData.music = Gdx.audio.newMusic(Gdx.files.internal("Love_Drama.ogg"));
-            GameData.currentUI = new GamePlayUI();
+            GameData.currentUI = new ChoosingUI();
         }
 
         x = screenWidth / 2 - EXIT_BUTTON_WIDTH / 2;

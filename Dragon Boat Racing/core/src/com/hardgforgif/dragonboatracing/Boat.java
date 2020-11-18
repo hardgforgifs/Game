@@ -13,11 +13,13 @@ import com.hardgforgif.dragonboatracing.standaloneprojects.moveableplayer.BodyEd
 public abstract class Boat {
     // Boat properties
     float robustness;
-    float stamina;
-    float handling;
+    float stamina = 120f;
+    float maneuverability;
     float speed;
     float acceleration;
-    float turningSpeed = 2f;
+
+    float current_speed = 20f;
+    float turningSpeed = 0.25f;
     float targetAngle = 0f;
 
     Sprite boatSprite;
@@ -32,14 +34,17 @@ public abstract class Boat {
     float rightLimit;
 
 
-    public Boat(float robustness, float stamina, float handling, float speed, String textureName, Lane lane) {
+    public Boat(float robustness, float speed, float acceleration, float maneuverability, int boatType, Lane lane) {
         this.robustness = robustness;
-        this.stamina = stamina;
-        this.handling = handling;
         this.speed = speed;
+        this.acceleration = acceleration;
+        this.maneuverability = maneuverability;
+        turningSpeed *= this.maneuverability / 100;
 
-        boatTexture = new Texture(textureName);
-        textureAtlas = new TextureAtlas(Gdx.files.internal("Boats/Boat2.atlas"));
+
+        boatTexture = new Texture("Boat" + (boatType + 1) + ".png");
+
+        textureAtlas = new TextureAtlas(Gdx.files.internal("Boats/Boat" + (boatType + 1) +  ".atlas"));
         animation = new Animation(1/15f, textureAtlas.getRegions());
 
         this.lane = lane;

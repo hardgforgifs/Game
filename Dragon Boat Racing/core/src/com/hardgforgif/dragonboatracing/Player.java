@@ -1,24 +1,23 @@
 package com.hardgforgif.dragonboatracing;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.hardgforgif.dragonboatracing.standaloneprojects.moveableplayer.BodyEditorLoader;
-import javafx.scene.Camera;
+
 
 public class Player extends Boat{
 
-    public Player(float robustness, float stamina, float handling, float speed, String textureName, Lane lane) {
-        super(robustness, stamina, handling, speed, textureName, lane);
-        this.turningSpeed = 0.25f;
+    public Player(float robustness, float speed, float acceleration, float maneuverability, int boatType, Lane lane) {
+        super(robustness, speed, acceleration, maneuverability, boatType, lane);
     }
 
     @Override
     public void moveBoat() {
+        System.out.println(this.turningSpeed);
+        current_speed += 0.15f * (acceleration/90);
+        if (current_speed > speed)
+            current_speed = speed;
+
         // Get the coordinates of the center of the boat
         float originX = boatBody.getPosition().x * GameData.METERS_TO_PIXELS;
         float originY = boatBody.getPosition().y * GameData.METERS_TO_PIXELS;
@@ -56,7 +55,7 @@ public class Player extends Boat{
         Vector2 movement = new Vector2();
 
         direction.set(target).sub(playerHeadPos).nor();
-        velocity.set(direction).scl(speed);
+        velocity.set(direction).scl(current_speed);
         movement.set(velocity).scl(Gdx.graphics.getDeltaTime());
 
         boatBody.setLinearVelocity(movement);
