@@ -31,10 +31,10 @@ public class Map {
     // The width of each tile in Pixels
     private float unitScale;
 
-    Lane[] lanes = new Lane[4];
+    public Lane[] lanes = new Lane[4];
 
-    Texture finishLineTexture;
-    Sprite finishLineSprite;
+    private Texture finishLineTexture;
+    private Sprite finishLineSprite;
 
     public Map(String tmxFile, float width){
         tiledMap = new TmxMapLoader().load(tmxFile);
@@ -49,11 +49,11 @@ public class Map {
     }
 
     // Returns the ratio between a tile and a meter in the game world
-    public float getTilesToMetersRatio(float metersToPixelsRatio) {
-        return ((this.screenWidth / metersToPixelsRatio) / this.mapWidth);
+    public float getTilesToMetersRatio() {
+        return ((this.screenWidth / GameData.METERS_TO_PIXELS) / this.mapWidth);
     }
 
-    public void createMapCollisions(String collisionLayerName, float metersToPixels, World world) {
+    public void createMapCollisions(String collisionLayerName, World world) {
         // Get the objects from the object layer in the tilemap
         MapLayer collisionLayer = tiledMap.getLayers().get(collisionLayerName);
         MapObjects objects = collisionLayer.getObjects();
@@ -66,18 +66,18 @@ public class Map {
             bodyDef.type = BodyDef.BodyType.StaticBody;
 
             // Find where we need to place the physics body
-            float positionX = (rectangle.getX() * unitScale / metersToPixels) +
-                                (rectangle.getWidth() * unitScale / metersToPixels / 2);
-            float positionY = (rectangle.getY() * unitScale / metersToPixels) +
-                                (rectangle.getHeight() * unitScale / metersToPixels / 2);
+            float positionX = (rectangle.getX() * unitScale / GameData.METERS_TO_PIXELS) +
+                                (rectangle.getWidth() * unitScale / GameData.METERS_TO_PIXELS / 2);
+            float positionY = (rectangle.getY() * unitScale / GameData.METERS_TO_PIXELS) +
+                                (rectangle.getHeight() * unitScale / GameData.METERS_TO_PIXELS / 2);
             bodyDef.position.set(positionX, positionY);
 
             Body objectBody = world.createBody(bodyDef);
 
             // Create the objects fixture, aka shape and physical properties
             PolygonShape shape = new PolygonShape();
-            shape.setAsBox(rectangle.getWidth() * unitScale / metersToPixels / 2,
-                           rectangle.getHeight() * unitScale / metersToPixels / 2);
+            shape.setAsBox(rectangle.getWidth() * unitScale / GameData.METERS_TO_PIXELS / 2,
+                           rectangle.getHeight() * unitScale / GameData.METERS_TO_PIXELS / 2);
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
             fixtureDef.density = 0f;

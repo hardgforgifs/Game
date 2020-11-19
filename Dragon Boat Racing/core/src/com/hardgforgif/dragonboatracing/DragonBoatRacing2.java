@@ -14,17 +14,17 @@ import javafx.util.Pair;
 import java.util.ArrayList;
 
 public class DragonBoatRacing2 extends ApplicationAdapter implements InputProcessor {
-	Player player;
-	AI[] opponents = new AI[3];
-	Map[] map;
-	Batch batch;
-	Batch UIbatch;
-	OrthographicCamera camera;
-	World[] world;
+	private Player player;
+	private AI[] opponents = new AI[3];
+	private Map[] map;
+	private Batch batch;
+	private Batch UIbatch;
+	private OrthographicCamera camera;
+	private World[] world;
 
 
-	public Vector2 mousePos = new Vector2();
-	public Vector2 clickPos = new Vector2();
+	private Vector2 mousePos = new Vector2();
+	private Vector2 clickPos = new Vector2();
 	private ShapeRenderer shapeRenderer;
 
 	private boolean[] pressedKeys = new boolean[4]; // W, A, S, D buttons status
@@ -55,12 +55,12 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 
 			// Initialize the map
 			map[i] = new Map("Map1/Map1.tmx", w);
-			map[i].createMapCollisions("CollisionLayerLeft", GameData.METERS_TO_PIXELS, world[i]);
-			map[i].createMapCollisions("CollisionLayerRight", GameData.METERS_TO_PIXELS, world[i]);
+			map[i].createMapCollisions("CollisionLayerLeft", world[i]);
+			map[i].createMapCollisions("CollisionLayerRight", world[i]);
 
 
 			// Calculate the ratio between pixels, meters and tiles
-			GameData.TILES_TO_METERS = map[i].getTilesToMetersRatio(GameData.METERS_TO_PIXELS);
+			GameData.TILES_TO_METERS = map[i].getTilesToMetersRatio();
 			GameData.PIXELS_TO_TILES = 1/(GameData.METERS_TO_PIXELS * GameData.TILES_TO_METERS);
 
 			map[i].createLanes(world[i]);
@@ -175,6 +175,20 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 		}
 	}
 
+
+	private void dnfRemainingBoats() {
+		if (!player.hasFinished()){
+			GameData.results.add(new Pair<>(0, GameData.currentTimer));
+			GameData.showResults = true;
+			GameData.currentUI = new ResultsUI();
+		}
+
+		for (int i = 0; i < 3; i++){
+			if (!opponents[i].hasFinished())
+				GameData.results.add(new Pair<>(i + 1, Float.MAX_VALUE));
+		}
+	}
+
 	@Override
 	public void render() {
 		Gdx.gl.glClearColor(0.15f, 0.15f, 0.3f, 1);
@@ -206,7 +220,7 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 
 					opponents[i - 1] = new AI(GameData.boatsStats[AIBoatType][0], GameData.boatsStats[AIBoatType][1],
 							GameData.boatsStats[AIBoatType][2], GameData.boatsStats[AIBoatType][3],
-							AIBoatType, camera, map[GameData.currentLeg].lanes[i]);
+							AIBoatType, map[GameData.currentLeg].lanes[i]);
 					opponents[i - 1].createBoatBody(world[GameData.currentLeg], GameData.startingPoints[i][0], GameData.startingPoints[i][1], "Boat1.json");
 				}
 			}
@@ -220,11 +234,11 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 				world[GameData.currentLeg].destroyBody(body);
 			}
 			for (Body body : toBeUpdatedHealthBoats){
-				if (player.boatBody == body){
+				if (player.boatBody == body && !player.hasFinished()){
 					player.robustness -= 10f;
 					player.current_speed -= 30f;
 
-					if(player.robustness < 0){
+					if(player.robustness <= 0){
 						world[GameData.currentLeg].destroyBody(player.boatBody);
 						GameData.results.add(new Pair<>(0, Float.MAX_VALUE));
 						GameData.showResults = true;
@@ -232,17 +246,18 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 					}
 				}
 
-
-				for (int i = 0; i < 3; i++){
-					if (opponents[i].boatBody == body) {
-						opponents[i].robustness -= 10f;
-						opponents[i].current_speed -= 30f;
-						if(opponents[i].robustness < 0){
-							world[GameData.currentLeg].destroyBody(opponents[i].boatBody);
-							GameData.results.add(new Pair<>(i + 1, Float.MAX_VALUE));
+				else {
+					for (int i = 0; i < 3; i++){
+						if (opponents[i].boatBody == body && !opponents[i].hasFinished()) {
+							opponents[i].robustness -= 10f;
+							opponents[i].current_speed -= 30f;
+							if(opponents[i].robustness < 0){
+								world[GameData.currentLeg].destroyBody(opponents[i].boatBody);
+								GameData.results.add(new Pair<>(i + 1, Float.MAX_VALUE));
+							}
 						}
-					}
 
+					}
 				}
 
 			}
@@ -284,6 +299,12 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 //			shapeRenderer.circle(opponents[0].leftLimit, opponents[0].boatSprite.getY() + opponents[0].boatSprite.getHeight() / 2, 5);
 //			shapeRenderer.circle(opponents[0].rightLimit, opponents[0].boatSprite.getY() + opponents[0].boatSprite.getHeight() / 2, 5);
 //			shapeRenderer.end();
+			checkForResults();
+
+			if(GameData.results.size() > 0 && GameData.results.size() < 4 &&
+					GameData.currentTimer > GameData.results.get(0).getValue() + 15f)
+				dnfRemainingBoats();
+
 			if(!GameData.showResults)
 				GameData.currentUI.drawPlayerUI(UIbatch, player);
 			else{
@@ -294,7 +315,7 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 
 			updateCamera(player);
 
-			checkForResults();
+
 
 //			debugMatrix = batch.getProjectionMatrix().cpy().scale(METERS_TO_PIXELS, METERS_TO_PIXELS, 0);
 
@@ -312,6 +333,7 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 
 
 	}
+
 
 	public void dispose() {
 		world[GameData.currentLeg].dispose();

@@ -1,6 +1,6 @@
 package com.hardgforgif.dragonboatracing;
 
-import com.badlogic.gdx.Game;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -10,8 +10,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import javafx.util.Pair;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -22,6 +20,7 @@ public class ResultsUI extends UI{
     private Sprite[] entrySprites = new Sprite[4];
     private BitmapFont[] resultFonts = new BitmapFont[4];
     private BitmapFont titleFont;
+    private BitmapFont timer_label;
 
     public ResultsUI(){
         entrySprites = new Sprite[4];
@@ -29,6 +28,9 @@ public class ResultsUI extends UI{
         titleFont = new BitmapFont();
         titleFont.getData().setScale(1.8f);
         titleFont.setColor(Color.BLACK);
+        timer_label = new BitmapFont();
+        timer_label.getData().setScale(1.4f);
+        timer_label.setColor(Color.BLACK);
 
 
         background = new Texture(Gdx.files.internal("Background.png"));
@@ -59,12 +61,16 @@ public class ResultsUI extends UI{
         titleFont.draw(batch, "Results", backgroundSprite.getX() + backgroundSprite.getWidth() / 2 - 30,
                 backgroundSprite.getY() + backgroundSprite.getHeight() - 50);
 
-        Collections.sort(GameData.results, new Comparator<Pair<Integer, Float>>() {
+        GameData.results.sort(new Comparator<Pair<Integer, Float>>() {
             @Override
             public int compare(Pair<Integer, Float> o1, Pair<Integer, Float> o2) {
-                if (o1.getValue() > o2.getValue())
+                if (o1.getValue() > o2.getValue()) {
                     return 1;
-                return 0;
+                } else if (o1.getValue().equals(o2.getValue())) {
+                    return 0;
+                } else {
+                    return -1;
+                }
             }
         });
         for (int i = 0; i < GameData.results.size(); i++){
@@ -86,7 +92,7 @@ public class ResultsUI extends UI{
             resultFonts[i].draw(batch, text, entrySprites[i].getX() + 50,  entrySprites[i].getY() + 30);
 
         }
-
+        timer_label.draw(batch, String.valueOf(Math.round(GameData.currentTimer * 10.0) / 10.0), 10, 700);
         batch.end();
 
         playMusic();

@@ -14,14 +14,14 @@ import java.util.Random;
 import static com.badlogic.gdx.math.MathUtils.random;
 
 public class Lane {
-    float[][] leftBoundry;
-    int leftIterator = 0;
-    float[][] rightBoundry;
-    int rightIterator = 0;
-    MapLayer leftLayer;
-    MapLayer rightLayer;
+    public float[][] leftBoundry;
+    public int leftIterator = 0;
+    public float[][] rightBoundry;
+    public int rightIterator = 0;
+    private MapLayer leftLayer;
+    private MapLayer rightLayer;
 
-    Obstacle[] obstacles;
+    public Obstacle[] obstacles;
 
     public Lane(int mapHeight, MapLayer left, MapLayer right, int nrObstacles){
         leftBoundry = new float[mapHeight][2];

@@ -1,6 +1,7 @@
 package com.hardgforgif.dragonboatracing;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -19,9 +20,16 @@ public class GamePlayUI extends UI{
 
     public GamePlayUI() {
         position_label = new BitmapFont();
+        position_label.getData().setScale(1.4f);
+        position_label.setColor(Color.BLACK);
+
         robustness_label = new BitmapFont();
         stamina_label = new BitmapFont();
+
         timer_label = new BitmapFont();
+        timer_label.getData().setScale(1.4f);
+        timer_label.setColor(Color.BLACK);
+
         stamina = new Texture(Gdx.files.internal("Stamina_bar.png"));
         robustness  = new Texture(Gdx.files.internal("Robustness_bar.png"));
         r_bar = new Sprite(robustness);

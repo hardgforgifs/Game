@@ -11,9 +11,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.hardgforgif.dragonboatracing.standaloneprojects.moveableplayer.BodyEditorLoader;
 
 public class Obstacle {
-    Sprite obstacleSprite;
-    Texture obstacleTexture;
-    Body obstacleBody;
+    public Sprite obstacleSprite;
+    private Texture obstacleTexture;
+    public Body obstacleBody;
 
     // Create an obstacle at pos (x,y)
     public Obstacle(String textureName){

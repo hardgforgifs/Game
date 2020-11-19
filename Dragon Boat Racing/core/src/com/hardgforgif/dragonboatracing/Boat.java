@@ -12,26 +12,26 @@ import com.hardgforgif.dragonboatracing.standaloneprojects.moveableplayer.BodyEd
 
 public abstract class Boat {
     // Boat properties
-    float robustness;
-    float stamina = 120f;
-    float maneuverability;
-    float speed;
-    float acceleration;
+    public float robustness;
+    public float stamina = 120f;
+    public float maneuverability;
+    public float speed;
+    public float acceleration;
 
-    float current_speed = 20f;
-    float turningSpeed = 0.25f;
-    float targetAngle = 0f;
+    public float current_speed = 20f;
+    public float turningSpeed = 0.25f;
+    public float targetAngle = 0f;
 
-    Sprite boatSprite;
-    Texture boatTexture;
-    Body boatBody;
+    public Sprite boatSprite;
+    public Texture boatTexture;
+    public Body boatBody;
 
-    TextureAtlas textureAtlas;
-    Animation animation;
+    private TextureAtlas textureAtlas;
+    private Animation animation;
 
-    Lane lane;
-    float leftLimit;
-    float rightLimit;
+    public Lane lane;
+    public float leftLimit;
+    public float rightLimit;
 
 
     public Boat(float robustness, float speed, float acceleration, float maneuverability, int boatType, Lane lane) {

@@ -1,7 +1,6 @@
 package com.hardgforgif.dragonboatracing;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
@@ -9,15 +8,12 @@ public class AI extends Boat{
 
     public Vector2 laneChecker;
     public Vector2 objectChecker;
-    private OrthographicCamera camera;
-    private float targetAngle = 0f;
-    private boolean dodging = false;
-    private boolean turning = false;
+    private boolean isDodging = false;
+    private boolean isTurning = false;
     private float detectedObstacleYPos;
 
-    public AI(float robustness, float stamina, float handling, float speed, int boatType, OrthographicCamera camera, Lane lane) {
+    public AI(float robustness, float stamina, float handling, float speed, int boatType, Lane lane) {
         super(robustness, stamina, handling, speed, boatType, lane);
-        this.camera = camera;
     }
 
     @Override
@@ -136,25 +132,25 @@ public class AI extends Boat{
 
         if (laneChecker.x < predictLimits[0] && boatSprite.getRotation() == 0){
             targetAngle = -15f;
-            turning = true;
+            isTurning = true;
         }
 
 
         else if (laneChecker.x < middleOfLane - laneWidth / 4 && boatSprite.getRotation() > 0){
             targetAngle = 0f;
-            turning = false;
+            isTurning = false;
         }
 
 
         if (laneChecker.x > predictLimits[1] && boatSprite.getRotation() == 0){
             targetAngle = 15f;
-            turning = true;
+            isTurning = true;
         }
 
 
         else if (laneChecker.x > middleOfLane + laneWidth / 4  && boatSprite.getRotation() < 0){
             targetAngle = 0f;
-            turning = false;
+            isTurning = false;
         }
 
 
@@ -184,17 +180,17 @@ public class AI extends Boat{
     private void dodgeObstacles(){
         if (obstaclesInRange()){
             float boatPosX = boatSprite.getX() + boatSprite.getWidth() / 2;
-            if (turning){
+            if (isTurning){
 
                 targetAngle = 0f;
-                turning = false;
+                isTurning = false;
             }
             else if (rightLimit - boatPosX < boatPosX - leftLimit){
                 targetAngle = 15f;
             }
             else
                 targetAngle = -15f;
-            dodging = true;
+            isDodging = true;
             rotateBoat(targetAngle);
             boatSprite.setRotation((float)Math.toDegrees(boatBody.getAngle()));
         }
@@ -211,7 +207,7 @@ public class AI extends Boat{
         float[] predictLimits = getLimitsAt(laneChecker.y);
 
 
-        if (dodging){
+        if (isDodging){
 //            System.out.println("dodging");
             rotateBoat(targetAngle);
             boatSprite.setRotation((float)Math.toDegrees(boatBody.getAngle()));
@@ -220,7 +216,7 @@ public class AI extends Boat{
                     boatSprite.getHeight() / 2 * boatSprite.getScaleY();
 
             if (boatFrontLocation >= detectedObstacleYPos)
-                dodging = false;
+                isDodging = false;
 
         }
         else{
