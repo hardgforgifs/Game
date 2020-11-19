@@ -1,4 +1,4 @@
-package com.hardgforgif.dragonboatracing;
+package com.hardgforgif.dragonboatracing.core;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -8,18 +8,25 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.hardgforgif.dragonboatracing.standaloneprojects.moveableplayer.BodyEditorLoader;
+import com.hardgforgif.dragonboatracing.GameData;
+import com.hardgforgif.dragonboatracing.BodyEditorLoader;
 
 public class Obstacle {
     public Sprite obstacleSprite;
     private Texture obstacleTexture;
     public Body obstacleBody;
 
-    // Create an obstacle at pos (x,y)
     public Obstacle(String textureName){
         obstacleTexture = new Texture(textureName);
     }
 
+    /**
+     * Creates a new obstacle body
+     * @param world World to create the body in
+     * @param posX x location of the body, in meters
+     * @param posY y location of the body, in meters
+     * @param bodyFile the name of the box2D editor json file for the body fixture
+     */
     public void createObstacleBody(World world, float posX, float posY, String bodyFile, float scale){
         obstacleSprite = new Sprite(obstacleTexture);
         obstacleSprite.scale(scale);
@@ -46,6 +53,10 @@ public class Obstacle {
                 (obstacleBody.getPosition().y * GameData.METERS_TO_PIXELS) - obstacleSprite.getHeight() / 2);
     }
 
+    /**
+     * Draw the obstacle
+     * @param batch Batch to draw on
+     */
     public void drawObstacle(Batch batch){
         obstacleSprite.setPosition((obstacleBody.getPosition().x * GameData.METERS_TO_PIXELS) - obstacleSprite.getWidth() / 2,
                 (obstacleBody.getPosition().y * GameData.METERS_TO_PIXELS) - obstacleSprite.getHeight() / 2);

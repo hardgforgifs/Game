@@ -1,8 +1,9 @@
-package com.hardgforgif.dragonboatracing;
+package com.hardgforgif.dragonboatracing.UI;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
+import com.hardgforgif.dragonboatracing.GameData;
+import com.hardgforgif.dragonboatracing.core.Player;
 
 public abstract class UI {
 

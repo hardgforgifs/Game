@@ -1,10 +1,8 @@
-package com.hardgforgif.dragonboatracing.tools;
+package com.hardgforgif.dragonboatracing.UI;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.hardgforgif.dragonboatracing.DragonBoatRacing;
 
 public class ScrollingBackground {
 
@@ -56,8 +54,8 @@ public class ScrollingBackground {
         if (y2 + scaledHeight <= 0) y2 = y1 + scaledHeight;
 
         // render
-        batch.draw(image, 0, y1, DragonBoatRacing.WIDTH, scaledHeight);
-        batch.draw(image, 0, y2, DragonBoatRacing.WIDTH, scaledHeight);
+        batch.draw(image, 0, y1, Gdx.graphics.getWidth(), scaledHeight);
+        batch.draw(image, 0, y2, Gdx.graphics.getWidth(), scaledHeight);
     }
 
     public void resize(int width, int height) {

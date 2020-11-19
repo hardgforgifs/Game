@@ -5,10 +5,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
+import com.hardgforgif.dragonboatracing.UI.ResultsUI;
+import com.hardgforgif.dragonboatracing.core.*;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
@@ -23,21 +24,17 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 	private World[] world;
 
 
-	private Vector2 mousePos = new Vector2();
-	private Vector2 clickPos = new Vector2();
-	private ShapeRenderer shapeRenderer;
-
+	private Vector2 mousePosition = new Vector2();
+	private Vector2 clickPosition = new Vector2();
 	private boolean[] pressedKeys = new boolean[4]; // W, A, S, D buttons status
-//	Matrix4 debugMatrix;
 
 	private ArrayList<Body> toBeRemovedBodies = new ArrayList<>();
-	private ArrayList<Body> toBeUpdatedHealthBoats = new ArrayList<>();
-//	Box2DDebugRenderer debugRenderer;
+	private ArrayList<Body> toUpdateHealth = new ArrayList<>();
+
 
 	@Override
 	public void create() {
-		shapeRenderer = new ShapeRenderer();
-		// Initialize the sprite batch
+		// Initialize the sprite batches
 		batch = new SpriteBatch();
 		UIbatch = new SpriteBatch();
 
@@ -45,45 +42,46 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 
+		// Initialise the world and the map arrays
 		world = new World[3];
 		map = new Map[3];
 		for (int i = 0; i < 3; i++){
 			// Initialize the physics game World
 			world[i] = new World(new Vector2(0f, 0f), true);
 
-
-
 			// Initialize the map
 			map[i] = new Map("Map1/Map1.tmx", w);
-			map[i].createMapCollisions("CollisionLayerLeft", world[i]);
-			map[i].createMapCollisions("CollisionLayerRight", world[i]);
-
 
 			// Calculate the ratio between pixels, meters and tiles
 			GameData.TILES_TO_METERS = map[i].getTilesToMetersRatio();
 			GameData.PIXELS_TO_TILES = 1/(GameData.METERS_TO_PIXELS * GameData.TILES_TO_METERS);
 
+			// Create the collision with the land
+			map[i].createMapCollisions("CollisionLayerLeft", world[i]);
+			map[i].createMapCollisions("CollisionLayerRight", world[i]);
+
+			// Create the lanes, and the obstacles in the physics game world
 			map[i].createLanes(world[i]);
+
+			// Create the finish line
 			map[i].createFinishLine("finishLine.png");
 
+			// Create a new collision handler for the world
 			createContactListener(world[i]);
 		}
-
-
-
 
 		// Initialize the camera
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, w, h);
 
-
-
+		// Set the app's input processor
 		Gdx.input.setInputProcessor(this);
-
-//		debugRenderer = new Box2DDebugRenderer();
 	}
 
-
+	/**
+	 * This method creates new ContactListener who's methods are executed when objects collide
+	 * @param world This is the physics world in which the collisions happen
+	 */
 	private void createContactListener(World world){
 		world.setContactListener(new ContactListener() {
 			@Override
@@ -97,9 +95,9 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 				}
 
 				if (fixtureA.getBody().getUserData() instanceof Boat) {
-					toBeUpdatedHealthBoats.add(fixtureA.getBody());
+					toUpdateHealth.add(fixtureA.getBody());
 				} else if (fixtureB.getBody().getUserData() instanceof Boat) {
-					toBeUpdatedHealthBoats.add(fixtureB.getBody());
+					toUpdateHealth.add(fixtureB.getBody());
 				}
 			}
 
@@ -120,14 +118,25 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 		});
 	}
 
+	/**
+	 * Sets the camera y position at the y position of a player's sprite
+	 * @param player The target player
+	 */
 	private void updateCamera(Player player) {
 		camera.position.set(camera.position.x, player.boatSprite.getY() + 600, 0);
 		camera.update();
 	}
 
+	/**
+	 * Updates the GameData.standings array by comparing boats positions
+	 */
 	private void updateStandings(){
+		// If the player hasn't finished the race...
 		if(!player.hasFinished()){
+			// Reset his position
 			GameData.standings[0] = 1;
+
+			// For every AI that is ahead, increment by 1
 			for (Boat boat: opponents)
 				if  (boat.boatSprite.getY() + boat.boatSprite.getHeight() / 2 > player.boatSprite.getY() + player.boatSprite.getHeight() / 2){
 					GameData.standings[0]++;
@@ -135,54 +144,70 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 
 		}
 
-
+		// Iterate through all the AIs to update their standings too
 		for (int i = 0; i < 3; i++)
+			// If the AI hasn't finished the race...
 			if(!opponents[i].hasFinished()){
+				// Reset his position
 				GameData.standings[i + 1] = 1;
+
+				// If the player is ahead, increment the standing by 1
 				if (player.boatSprite.getY() > opponents[i].boatSprite.getY())
 					GameData.standings[i + 1]++;
+
+				// For every other AI that is ahead, increment by 1
 				for (int j = 0; j < 3; j++)
 					if(opponents[j].boatSprite.getY() > opponents[i].boatSprite.getY())
 						GameData.standings[i + 1]++;
 			}
-
-//		float[] boatsPosition = new float[4];
-//		boatsPosition[0] = player.boatSprite.getY();
-//		for (int i = 1; i < 4; i++){
-//				boatsPosition[i] = opponents[i - 1].boatSprite.getY();
-//		}
-//
-//		for (int i = 0; i < 4; i++){
-//			for (int j = 0; j < 4; j++){
-//				if(boatsPosition[i] < boatsPosition[j])
-//					GameData.standings[i]++;
-//			}
-//		}
 	}
 
+	/**
+	 * Updates the GameData.results list by adding a new result every time a boat finishes the game
+	 */
 	private void checkForResults(){
+		// If the player has finished and we haven't added his result already...
 		if(player.hasFinished() && player.acceleration > 0){
+			// Add the result to the list with key 0, the player's lane
 			GameData.results.add(new Pair<>(0, GameData.currentTimer));
+
+			// Transition to the results UI
 			GameData.showResults = true;
 			GameData.currentUI = new ResultsUI();
+
+			// Change the player's acceleration so the boat stops moving
 			player.acceleration = -200f;
 		}
+
+		// Iterate through the AI to see if any of them finished the race
 		for (int i = 0; i < 3; i++){
+			// If the AI has finished and we haven't added his result already...
 			if(opponents[i].hasFinished() && opponents[i].acceleration > 0){
+				// Add the result to the list with the his lane numer as key
 				GameData.results.add(new Pair<>(i + 1, GameData.currentTimer));
+
+				// Change the AI's acceleration so the boat stops moving
 				opponents[i].acceleration = -200f;
 			}
 		}
 	}
 
 
+	/**
+	 * This method marks all the boats that haven't finished the race as dnfs
+	 */
 	private void dnfRemainingBoats() {
+		// If the player hasn't finished
 		if (!player.hasFinished()){
-			GameData.results.add(new Pair<>(0, GameData.currentTimer));
+			// Add a dnf result
+			GameData.results.add(new Pair<>(0, Float.MAX_VALUE));
+
+			// Transition to the showResult screen
 			GameData.showResults = true;
 			GameData.currentUI = new ResultsUI();
 		}
 
+		// Iterate through the AI and add a dnf result for any who haven't finished
 		for (int i = 0; i < 3; i++){
 			if (!opponents[i].hasFinished())
 				GameData.results.add(new Pair<>(i + 1, Float.MAX_VALUE));
@@ -191,24 +216,23 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 
 	@Override
 	public void render() {
+		// Reset the screen
 		Gdx.gl.glClearColor(0.15f, 0.15f, 0.3f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		if (GameData.mainMenu){
-			GameData.currentUI.drawUI(UIbatch, mousePos, Gdx.graphics.getWidth(), Gdx.graphics.getDeltaTime());
-			GameData.currentUI.getInput(Gdx.graphics.getWidth(), clickPos);
+		// If the game is in the main menu state
+		if (GameData.mainMenu || GameData.choosingBoat){
+			// Draw the UI and wait for the input
+			GameData.currentUI.drawUI(UIbatch, mousePosition, Gdx.graphics.getWidth(), Gdx.graphics.getDeltaTime());
+			GameData.currentUI.getInput(Gdx.graphics.getWidth(), clickPosition);
 		}
 
-		else if (GameData.choosingBoat){
-			GameData.currentUI.drawUI(UIbatch, mousePos, Gdx.graphics.getWidth(), Gdx.graphics.getDeltaTime());
-			GameData.currentUI.getInput(Gdx.graphics.getWidth(), clickPos);
-		}
-
+		// Otherwise, if we are in the game play state
 		else if(GameData.gamePlay){
+			// If it's the first iteration in this state, the boats need to be created at their starting positions
 			if (player == null){
 				// Create the player boat
 				int playerBoatType = GameData.boatTypes[0];
-
 				player = new Player(GameData.boatsStats[playerBoatType][0], GameData.boatsStats[playerBoatType][1],
 						GameData.boatsStats[playerBoatType][2], GameData.boatsStats[playerBoatType][3],
 						playerBoatType, map[GameData.currentLeg].lanes[0]);
@@ -217,7 +241,6 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 				// Create the AI boats
 				for (int i = 1; i <= 3; i++){
 					int AIBoatType = GameData.boatTypes[i];
-
 					opponents[i - 1] = new AI(GameData.boatsStats[AIBoatType][0], GameData.boatsStats[AIBoatType][1],
 							GameData.boatsStats[AIBoatType][2], GameData.boatsStats[AIBoatType][3],
 							AIBoatType, map[GameData.currentLeg].lanes[i]);
@@ -225,32 +248,50 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 				}
 			}
 
+			// Iterate through the bodies that need to be removed from the world after a collision
 			for (Body body : toBeRemovedBodies){
+				// Find the obstacle that has this body and mark it as null
+				// so it's sprite doesn't get rendered in future frames
 				for (Lane lane : map[GameData.currentLeg].lanes)
 					for (Obstacle obstacle : lane.obstacles)
 						if (obstacle.obstacleBody == body) {
 							obstacle.obstacleBody = null;
 						}
+
+				// Remove the body from the world to avoid other collisions with it
 				world[GameData.currentLeg].destroyBody(body);
 			}
-			for (Body body : toBeUpdatedHealthBoats){
+
+			// Iterate through the bodies marked to be damaged after a collision
+			for (Body body : toUpdateHealth){
+				// if it's the player body
 				if (player.boatBody == body && !player.hasFinished()){
+					// Reduce the health and the speed
 					player.robustness -= 10f;
 					player.current_speed -= 30f;
 
+					// If all the health is lost
 					if(player.robustness <= 0){
+						// Remove the body from the world, but keep it's sprite in place
 						world[GameData.currentLeg].destroyBody(player.boatBody);
+
+						// Add a DNF result
 						GameData.results.add(new Pair<>(0, Float.MAX_VALUE));
+
+						// Transition to the show result screen
 						GameData.showResults = true;
 						GameData.currentUI = new ResultsUI();
 					}
 				}
 
+				// Otherwise, one of the AI has to be updated similarly
 				else {
 					for (int i = 0; i < 3; i++){
 						if (opponents[i].boatBody == body && !opponents[i].hasFinished()) {
+
 							opponents[i].robustness -= 10f;
 							opponents[i].current_speed -= 30f;
+
 							if(opponents[i].robustness < 0){
 								world[GameData.currentLeg].destroyBody(opponents[i].boatBody);
 								GameData.results.add(new Pair<>(i + 1, Float.MAX_VALUE));
@@ -263,75 +304,76 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 			}
 
 			toBeRemovedBodies.clear();
-			toBeUpdatedHealthBoats.clear();
+			toUpdateHealth.clear();
 
 			// Advance the game world physics
 			world[GameData.currentLeg].step(1f/60f, 6, 2);
 
+			// Update the timer
 			GameData.currentTimer += Gdx.graphics.getDeltaTime();
-			player.updatePlayer(pressedKeys, Gdx.graphics.getDeltaTime());
 
-//			System.out.println(player.boatSprite.getY());
+			// Update the player's and the AI movement
+			player.updatePlayer(pressedKeys, Gdx.graphics.getDeltaTime());
 			for (AI opponent : opponents)
 				opponent.updateAI(Gdx.graphics.getDeltaTime());
 
-
-
+			// Set the camera as the batches projection matrix
 			batch.setProjectionMatrix(camera.combined);
+
+			// Render the map
 			map[GameData.currentLeg].renderMap(camera, batch);
+
+			// Render the player and the AIs
 			player.drawBoat(batch);
 			for (AI opponent : opponents)
 				opponent.drawBoat(batch);
-//			System.out.println(player.boatSprite.getY());
-//			System.out.println(mousePos.y);
-			shapeRenderer.setProjectionMatrix(camera.combined);
 
+			// Render the objects that weren't destroyed yet
 			for (Lane lane : map[GameData.currentLeg].lanes)
 				for (Obstacle obstacle : lane.obstacles){
 					if (obstacle.obstacleBody != null)
 						obstacle.drawObstacle(batch);
 				}
 
+			// Update the camera at the player's position
+			updateCamera(player);
+
+			// Update the standings of each boat
 			updateStandings();
 
-//			shapeRenderer.setColor(Color.BLACK);
-//			shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-//			shapeRenderer.circle(opponents[0].leftLimit, opponents[0].boatSprite.getY() + opponents[0].boatSprite.getHeight() / 2, 5);
-//			shapeRenderer.circle(opponents[0].rightLimit, opponents[0].boatSprite.getY() + opponents[0].boatSprite.getHeight() / 2, 5);
-//			shapeRenderer.end();
-			checkForResults();
-
+			// If it's been 15 seconds since the winner completed the race, dnf all boats who haven't finished yet
+			// Then transition to the result state
 			if(GameData.results.size() > 0 && GameData.results.size() < 4 &&
-					GameData.currentTimer > GameData.results.get(0).getValue() + 15f)
+					GameData.currentTimer > GameData.results.get(0).getValue() + 15f){
 				dnfRemainingBoats();
-
-			if(!GameData.showResults)
-				GameData.currentUI.drawPlayerUI(UIbatch, player);
-			else{
-				GameData.currentUI.drawUI(UIbatch, mousePos, Gdx.graphics.getWidth(), Gdx.graphics.getDeltaTime());
-				GameData.currentUI.getInput(Gdx.graphics.getWidth(), clickPos);
+				GameData.showResults = true;
+				GameData.currentUI = new ResultsUI();
+			}
+			// Otherwise keep checking for new results
+			else {
+				checkForResults();
 			}
 
 
-			updateCamera(player);
-
-
-
-//			debugMatrix = batch.getProjectionMatrix().cpy().scale(METERS_TO_PIXELS, METERS_TO_PIXELS, 0);
-
-//			debugRenderer.render(world, debugMatrix);
+			// Choose which UI to display based on the current state
+			if(!GameData.showResults)
+				GameData.currentUI.drawPlayerUI(UIbatch, player);
+			else{
+				GameData.currentUI.drawUI(UIbatch, mousePosition, Gdx.graphics.getWidth(), Gdx.graphics.getDeltaTime());
+				GameData.currentUI.getInput(Gdx.graphics.getWidth(), clickPosition);
+			}
 		}
+
+		// Otherwise we need need to prepare for the next leg
 		else if(GameData.resetGame){
 			player = null;
-
-
 			GameData.resetGame = false;
 			GameData.gamePlay = true;
 		}
-		if(clickPos.x != 0f && clickPos.y != 0f)
-			clickPos.set(0f,0f);
 
-
+		// If we haven't clicked anywhere in the last frame, reset the click position
+		if(clickPosition.x != 0f && clickPosition.y != 0f)
+			clickPosition.set(0f,0f);
 	}
 
 
@@ -373,7 +415,7 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		Vector3 position = camera.unproject(new Vector3(screenX, screenY, 0));
-		clickPos.set(position.x, position.y);
+		clickPosition.set(position.x, position.y);
 		return true;
 	}
 
@@ -390,7 +432,7 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
 		Vector3 position = camera.unproject(new Vector3(screenX, screenY, 0));
-		mousePos.set(position.x, position.y);
+		mousePosition.set(position.x, position.y);
 		return true;
 	}
 

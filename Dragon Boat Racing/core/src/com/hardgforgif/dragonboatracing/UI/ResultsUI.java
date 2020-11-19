@@ -1,4 +1,4 @@
-package com.hardgforgif.dragonboatracing;
+package com.hardgforgif.dragonboatracing.UI;
 
 
 import com.badlogic.gdx.Gdx;
@@ -8,9 +8,10 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.hardgforgif.dragonboatracing.GameData;
+import com.hardgforgif.dragonboatracing.core.Player;
 import javafx.util.Pair;
 
-import java.util.Collections;
 import java.util.Comparator;
 
 public class ResultsUI extends UI{

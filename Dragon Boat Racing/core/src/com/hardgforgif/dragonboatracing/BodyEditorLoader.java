@@ -1,4 +1,4 @@
-package com.hardgforgif.dragonboatracing.standaloneprojects.moveableplayer;///package aurelienribon.bodyeditor;
+package com.hardgforgif.dragonboatracing;///package aurelienribon.bodyeditor;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;

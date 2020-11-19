@@ -1,10 +1,9 @@
-package com.hardgforgif.dragonboatracing;
+package com.hardgforgif.dragonboatracing.core;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
@@ -15,6 +14,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
+import com.hardgforgif.dragonboatracing.GameData;
 
 public class Map {
     // Map components
@@ -48,11 +48,18 @@ public class Map {
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, unitScale);
     }
 
-    // Returns the ratio between a tile and a meter in the game world
+    /**
+     * @return The ratio between a tile and a meter in the game world
+     */
     public float getTilesToMetersRatio() {
         return ((this.screenWidth / GameData.METERS_TO_PIXELS) / this.mapWidth);
     }
 
+    /**
+     * Creates bodies on the edges of the river, based on a pre-made layer of objects in Tiled
+     * @param collisionLayerName Name of the Tiled layer with the rectangle objects
+     * @param world World to spawn the bodies in
+     */
     public void createMapCollisions(String collisionLayerName, World world) {
         // Get the objects from the object layer in the tilemap
         MapLayer collisionLayer = tiledMap.getLayers().get(collisionLayerName);
@@ -89,7 +96,9 @@ public class Map {
         }
     }
 
-    // Renders the map on the screen
+    /**
+     * Renders the map on the screen
+     */
     public void renderMap(OrthographicCamera camera, Batch batch) {
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
@@ -101,6 +110,10 @@ public class Map {
         batch.end();
     }
 
+    /**
+     * Instantiates the lane array and spawns obstacles on each of the lanes
+     * @param world World to spawn the obstacles in
+     */
     public void createLanes(World world){
         MapLayer leftLayer = tiledMap.getLayers().get("CollisionLayerLeft");
         MapLayer rightLayer = tiledMap.getLayers().get("Lane1");
@@ -134,9 +147,9 @@ public class Map {
     public void createFinishLine(String textureFile){
         finishLineTexture = new Texture(textureFile);
         finishLineSprite = new Sprite(finishLineTexture);
-        float startpoint = lanes[0].getLimitsAt(GameData.finishLineLocation)[0];
-        float width = lanes[3].getLimitsAt(GameData.finishLineLocation)[1] - startpoint;
-        finishLineSprite.setPosition(startpoint, GameData.finishLineLocation);
+        float startpoint = lanes[0].getLimitsAt(9000f)[0];
+        float width = lanes[3].getLimitsAt(9000f)[1] - startpoint;
+        finishLineSprite.setPosition(startpoint, 9000f);
         finishLineSprite.setSize(width, 50);
     }
 

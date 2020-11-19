@@ -1,17 +1,13 @@
-package com.hardgforgif.dragonboatracing;
+package com.hardgforgif.dragonboatracing.core;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
+import com.hardgforgif.dragonboatracing.GameData;
 
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Random;
-
-import static com.badlogic.gdx.math.MathUtils.random;
 
 public class Lane {
     public float[][] leftBoundry;
@@ -34,6 +30,10 @@ public class Lane {
 
     }
 
+    /**
+     * Construct bodies that match the lane separators
+     * @param unitScale The size of a tile in pixels
+     */
     public void constructBoundries(float unitScale){
         MapObjects objects = leftLayer.getObjects();
 
@@ -75,12 +75,19 @@ public class Lane {
         return lst;
     }
 
+    /**
+     * Spawn obstacles on the lane
+     * @param world World to spawn obstacles in
+     * @param mapHeight Height of the map to draw on
+     */
     public void spawnObstacles(World world, float mapHeight){
         int nrObstacles = obstacles.length;
         float segmentLength = mapHeight / nrObstacles;
         for (int i = 0; i < nrObstacles; i++){
-            int randomIndex = new Random().nextInt(GameData.obstaclesScales.size());
-            float scale = GameData.obstaclesScales.get(randomIndex);
+            int randomIndex = new Random().nextInt(6);
+            float scale = 0f;
+            if (randomIndex == 0 || randomIndex == 5)
+                scale = -0.8f;
             obstacles[i] = new Obstacle("Obstacles/Obstacle" + (randomIndex + 1) + ".png");
             float segmentStart = i * segmentLength;
             float yPos = (float) (600f + (segmentStart + Math.random() * segmentLength));
