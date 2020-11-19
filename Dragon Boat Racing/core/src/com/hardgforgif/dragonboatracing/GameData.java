@@ -2,6 +2,7 @@ package com.hardgforgif.dragonboatracing;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +33,6 @@ public class GameData {
     public static float currentTimer = 0f;
 
     public static float finishLineLocation = 9000f;
-    public static List<Float> results = new ArrayList<>();
+    public static List<Pair<Integer,Float>> results = new ArrayList<Pair<Integer,Float>>();
     public static int[] standings = new int[4]; // Standings of the boat on each lane
 }

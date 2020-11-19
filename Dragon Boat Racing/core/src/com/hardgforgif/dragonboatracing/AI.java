@@ -22,7 +22,7 @@ public class AI extends Boat{
 
     @Override
     public void moveBoat() {
-        current_speed += 0.15f * (acceleration/90);
+        current_speed += 0.15f * (acceleration/90)  * (stamina/100);
         if (current_speed > speed)
             current_speed = speed;
         if (current_speed < 0)
@@ -201,7 +201,7 @@ public class AI extends Boat{
     }
 
 
-    public void updateAI() {
+    public void updateAI(float delta) {
         boatSprite.setPosition((boatBody.getPosition().x * GameData.METERS_TO_PIXELS) - boatSprite.getWidth() / 2,
                 (boatBody.getPosition().y * GameData.METERS_TO_PIXELS) - boatSprite.getHeight() / 2);
 
@@ -231,10 +231,7 @@ public class AI extends Boat{
         moveBoat();
         updateLimits();
 
-        if(hasFinished() && acceleration > 0){
-            GameData.results.add(GameData.currentTimer);
-            this.acceleration = -200f;
-        }
+        stamina -= 0.8 * delta;
 
     }
 }

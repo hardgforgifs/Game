@@ -13,7 +13,7 @@ public class Player extends Boat{
 
     @Override
     public void moveBoat() {
-        current_speed += 0.15f * (acceleration/90);
+        current_speed += 0.15f * (acceleration/90) * (stamina/100);
         if (current_speed > speed)
             current_speed = speed;
         if (current_speed < 0)
@@ -77,9 +77,9 @@ public class Player extends Boat{
         float newAngle = boatSprite.getRotation();
 
         if (angleDifference < 0)
-            newAngle += turningSpeed * (-1);
+            newAngle += turningSpeed * (-1) * (this.stamina / 70);
         else if (angleDifference > 0)
-            newAngle += turningSpeed;
+            newAngle += turningSpeed * (this.stamina / 70);
 
         boatBody.setTransform(boatBody.getPosition(), newAngle * MathUtils.degRad);
     }
@@ -103,14 +103,7 @@ public class Player extends Boat{
         updateLimits();
 
 
-        stamina -= 0.8 * delta;
-
-        if(hasFinished() && acceleration > 0){
-            GameData.results.add(GameData.currentTimer);
-            GameData.showResults = true;
-            GameData.currentUI = new ResultsUI();
-            this.acceleration = -200f;
-        }
+        stamina -= 1.5 * delta;
 
     }
 }

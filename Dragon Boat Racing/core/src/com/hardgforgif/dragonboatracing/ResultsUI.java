@@ -8,10 +8,12 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import javafx.util.Pair;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 
 public class ResultsUI extends UI{
     private Texture background;
@@ -57,20 +59,25 @@ public class ResultsUI extends UI{
         titleFont.draw(batch, "Results", backgroundSprite.getX() + backgroundSprite.getWidth() / 2 - 30,
                 backgroundSprite.getY() + backgroundSprite.getHeight() - 50);
 
-        Collections.sort(GameData.results);
+        Collections.sort(GameData.results, new Comparator<Pair<Integer, Float>>() {
+            @Override
+            public int compare(Pair<Integer, Float> o1, Pair<Integer, Float> o2) {
+                if (o1.getValue() > o2.getValue())
+                    return 1;
+                return 0;
+            }
+        });
         for (int i = 0; i < GameData.results.size(); i++){
-            float result = GameData.results.get(i);
+            int boatNr = GameData.results.get(i).getKey();
+            float result = GameData.results.get(i).getValue();
 
             entrySprites[i].draw(batch);
 
-            String text = "";
-            if (i == GameData.standings[0] - 1)
-                text = (i + 1) + ". Player: ";
+            String text = (i + 1) + ". ";
+            if (boatNr == 0)
+                text += "Player: ";
             else{
-                for (int j = 1; j < 4; j++){
-                    if (i == GameData.standings[j] - 1)
-                        text = (i + 1) + ". Opponent" + j + ": ";
-                }
+                text += "Opponent" + boatNr + ": ";
             }
             if (result != Float.MAX_VALUE)
                 text += result;
@@ -93,6 +100,8 @@ public class ResultsUI extends UI{
     @Override
     public void getInput(float screenWidth, Vector2 mousePos) {
         if(mousePos.x != 0f && mousePos.y != 0f && GameData.results.size() == 4) {
+            if (GameData.currentLeg == 2)
+                Gdx.app.exit();
             GameData.showResults = false;
             GameData.gamePlay = false;
             GameData.resetGame = true;
