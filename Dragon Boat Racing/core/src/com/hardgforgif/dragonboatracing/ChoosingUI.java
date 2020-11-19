@@ -6,15 +6,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.hardgforgif.dragonboatracing.tools.ScrollingBackground;
 
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 public class ChoosingUI extends UI{
     private Texture background;
@@ -119,11 +115,7 @@ public class ChoosingUI extends UI{
         }
         batch.end();
 
-        //Keeps music on repeat
-        //Dont have the GameData class on my end, so remove comments below
-        /*if (GameData.music.isPlaying() == false) {
-            GameData.music.play();
-        }*/
+        playMusic();
     }
 
     @Override
@@ -148,6 +140,9 @@ public class ChoosingUI extends UI{
                 GameData.boatTypes[2] = intList.get(1);
                 GameData.boatTypes[3] = intList.get(2);
 
+                GameData.music.stop();
+                GameData.music = Gdx.audio.newMusic(Gdx.files.internal("Love_Drama.ogg"));
+
                 GameData.choosingBoat = false;
                 GameData.gamePlay = true;
                 GameData.currentUI = new GamePlayUI();
@@ -156,7 +151,7 @@ public class ChoosingUI extends UI{
     }
 
     @Override
-    public void drawUI(Batch batch, Player playerBoat) {
+    public void drawPlayerUI(Batch batch, Player playerBoat) {
 
     }
 

@@ -83,7 +83,7 @@ public class Lane {
             float scale = GameData.obstaclesScales.get(randomIndex);
             obstacles[i] = new Obstacle("Obstacles/Obstacle" + (randomIndex + 1) + ".png");
             float segmentStart = i * segmentLength;
-            float yPos = (float) (segmentStart + Math.random() * segmentLength);
+            float yPos = (float) (600f + (segmentStart + Math.random() * segmentLength));
 
             float[] limits = this.getLimitsAt(yPos);
             float leftLimit = limits[0] + 50;

@@ -1,6 +1,10 @@
 package com.hardgforgif.dragonboatracing;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
@@ -11,7 +15,6 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
-import javafx.scene.Camera;
 
 public class Map {
     // Map components
@@ -29,6 +32,9 @@ public class Map {
     private float unitScale;
 
     Lane[] lanes = new Lane[4];
+
+    Texture finishLineTexture;
+    Sprite finishLineSprite;
 
     public Map(String tmxFile, float width){
         tiledMap = new TmxMapLoader().load(tmxFile);
@@ -84,16 +90,22 @@ public class Map {
     }
 
     // Renders the map on the screen
-    public void renderMap(OrthographicCamera camera) {
+    public void renderMap(OrthographicCamera camera, Batch batch) {
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
+        batch.begin();
+        batch.draw(finishLineSprite, finishLineSprite.getX(), finishLineSprite.getY(), finishLineSprite.getOriginX(),
+                finishLineSprite.getOriginY(),
+                finishLineSprite.getWidth(), finishLineSprite.getHeight(), finishLineSprite.getScaleX(),
+                finishLineSprite.getScaleY(), finishLineSprite.getRotation());
+        batch.end();
     }
 
     public void createLanes(World world){
         MapLayer leftLayer = tiledMap.getLayers().get("CollisionLayerLeft");
         MapLayer rightLayer = tiledMap.getLayers().get("Lane1");
 
-        lanes[0] = new Lane(mapHeight, leftLayer, rightLayer, 10);
+        lanes[0] = new Lane(mapHeight, leftLayer, rightLayer, 30);
         lanes[0].constructBoundries(unitScale);
         lanes[0].spawnObstacles(world, mapHeight / GameData.PIXELS_TO_TILES);
 
@@ -107,17 +119,25 @@ public class Map {
         leftLayer = tiledMap.getLayers().get("Lane2");
         rightLayer = tiledMap.getLayers().get("Lane3");
 
-        lanes[2] = new Lane(mapHeight, leftLayer, rightLayer, 10);
+        lanes[2] = new Lane(mapHeight, leftLayer, rightLayer, 30);
         lanes[2].constructBoundries(unitScale);
         lanes[2].spawnObstacles(world, mapHeight / GameData.PIXELS_TO_TILES);
 
         leftLayer = tiledMap.getLayers().get("Lane3");
         rightLayer = tiledMap.getLayers().get("CollisionLayerRight");
 
-        lanes[3] = new Lane(mapHeight, leftLayer, rightLayer, 10);
+        lanes[3] = new Lane(mapHeight, leftLayer, rightLayer, 30);
         lanes[3].constructBoundries(unitScale);
         lanes[3].spawnObstacles(world, mapHeight / GameData.PIXELS_TO_TILES);
     }
 
+    public void createFinishLine(String textureFile){
+        finishLineTexture = new Texture(textureFile);
+        finishLineSprite = new Sprite(finishLineTexture);
+        float startpoint = lanes[0].getLimitsAt(GameData.finishLineLocation)[0];
+        float width = lanes[3].getLimitsAt(GameData.finishLineLocation)[1] - startpoint;
+        finishLineSprite.setPosition(startpoint, GameData.finishLineLocation);
+        finishLineSprite.setSize(width, 50);
+    }
 
 }

@@ -13,10 +13,11 @@ public class Player extends Boat{
 
     @Override
     public void moveBoat() {
-        System.out.println(this.turningSpeed);
         current_speed += 0.15f * (acceleration/90);
         if (current_speed > speed)
             current_speed = speed;
+        if (current_speed < 0)
+            current_speed = 0;
 
         // Get the coordinates of the center of the boat
         float originX = boatBody.getPosition().x * GameData.METERS_TO_PIXELS;
@@ -84,6 +85,7 @@ public class Player extends Boat{
     }
 
     public void updatePlayer(boolean[] pressedKeys, float delta) {
+
         if (pressedKeys[1])
             targetAngle = 90f;
         else if (pressedKeys[3])
@@ -99,6 +101,16 @@ public class Player extends Boat{
 
         moveBoat();
         updateLimits();
+
+
         stamina -= 0.8 * delta;
+
+        if(hasFinished() && acceleration > 0){
+            GameData.results.add(GameData.currentTimer);
+            GameData.showResults = true;
+            GameData.currentUI = new ResultsUI();
+            this.acceleration = -200f;
+        }
+
     }
 }

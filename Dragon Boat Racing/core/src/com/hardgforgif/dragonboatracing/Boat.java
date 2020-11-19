@@ -119,11 +119,12 @@ public abstract class Boat {
         return lst;
     }
 
-    public void loseRobustness(){
-        this.robustness -= 10f;
+    public boolean hasFinished(){
+        if (boatSprite.getY() + boatSprite.getHeight() / 2 > GameData.finishLineLocation)
+            return true;
+        return false;
     }
 
-    // We need to apply forces so we will need to work in meters, so we need to pass the ratio
     public abstract void moveBoat();
 
     public abstract void rotateBoat(float angle);

@@ -75,13 +75,11 @@ public class MenuUI extends UI {
         }
         batch.end();
 
-        if (GameData.music.isPlaying() == false) {
-            GameData.music.play();
-        }
+        playMusic();
     }
 
     @Override
-    public void drawUI(Batch batch, Player playerBoat) {
+    public void drawPlayerUI(Batch batch, Player playerBoat) {
 
     }
 
@@ -96,8 +94,6 @@ public class MenuUI extends UI {
         ) {
             GameData.mainMenu = false;
             GameData.choosingBoat = true;
-            GameData.music.stop();
-            GameData.music = Gdx.audio.newMusic(Gdx.files.internal("Love_Drama.ogg"));
             GameData.currentUI = new ChoosingUI();
         }
 

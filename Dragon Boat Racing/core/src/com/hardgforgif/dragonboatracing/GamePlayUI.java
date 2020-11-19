@@ -16,8 +16,6 @@ public class GamePlayUI extends UI{
     private Texture robustness;
     private Sprite r_bar;
     private Sprite s_bar;
-    //Remove this
-    private int player_position;
 
     public GamePlayUI() {
         position_label = new BitmapFont();
@@ -31,10 +29,6 @@ public class GamePlayUI extends UI{
         s_bar.setPosition(10 ,120);
         r_bar.setPosition(10,60);
 
-
-        //Remove this
-        player_position = 1;
-
     }
 
     @Override
@@ -43,7 +37,7 @@ public class GamePlayUI extends UI{
     }
 
     @Override
-    public void drawUI(Batch batch, Player playerBoat) {
+    public void drawPlayerUI(Batch batch, Player playerBoat) {
         s_bar.setSize(playerBoat.stamina, 30);
         r_bar.setSize(playerBoat.robustness,30);
 
@@ -52,10 +46,12 @@ public class GamePlayUI extends UI{
         r_bar.draw(batch);
         robustness_label.draw(batch, "Robustness", 10, 110);
         stamina_label.draw(batch, "Stamina", 10,170);
-        //Replace player position with the player's position in the race
-        position_label.draw(batch, player_position + "/8", 1225, 700);
+
+        position_label.draw(batch, GameData.standings[0] + "/4", 1225, 700);
         timer_label.draw(batch, String.valueOf(Math.round(GameData.currentTimer * 10.0) / 10.0), 10, 700);
         batch.end();
+
+        playMusic();
     }
 
     public void dispose() {

@@ -25,6 +25,8 @@ public class AI extends Boat{
         current_speed += 0.15f * (acceleration/90);
         if (current_speed > speed)
             current_speed = speed;
+        if (current_speed < 0)
+            current_speed = 0;
 
         // Get the coordinates of the center of the boat
         float originX = boatBody.getPosition().x * GameData.METERS_TO_PIXELS;
@@ -200,7 +202,6 @@ public class AI extends Boat{
 
 
     public void updateAI() {
-
         boatSprite.setPosition((boatBody.getPosition().x * GameData.METERS_TO_PIXELS) - boatSprite.getWidth() / 2,
                 (boatBody.getPosition().y * GameData.METERS_TO_PIXELS) - boatSprite.getHeight() / 2);
 
@@ -216,7 +217,7 @@ public class AI extends Boat{
             boatSprite.setRotation((float)Math.toDegrees(boatBody.getAngle()));
 
             float boatFrontLocation = boatSprite.getY() + boatSprite.getHeight() / 2 +
-                                        boatSprite.getHeight() / 2 * boatSprite.getScaleY();
+                    boatSprite.getHeight() / 2 * boatSprite.getScaleY();
 
             if (boatFrontLocation >= detectedObstacleYPos)
                 dodging = false;
@@ -229,5 +230,11 @@ public class AI extends Boat{
         }
         moveBoat();
         updateLimits();
+
+        if(hasFinished() && acceleration > 0){
+            GameData.results.add(GameData.currentTimer);
+            this.acceleration = -200f;
+        }
+
     }
 }
