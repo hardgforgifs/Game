@@ -14,7 +14,7 @@ import javafx.util.Pair;
 
 import java.util.ArrayList;
 
-public class DragonBoatRacing2 extends ApplicationAdapter implements InputProcessor {
+public class DragonBoatRacing extends ApplicationAdapter implements InputProcessor {
 	private Player player;
 	private AI[] opponents = new AI[3];
 	private Map[] map;
@@ -192,6 +192,22 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 		}
 	}
 
+	private void updatePenalties() {
+		// Update the penalties for the player, if he is outside his lane
+		float boatCenter = player.boatSprite.getX() + player.boatSprite.getWidth() / 2;
+		if (!player.hasFinished() && boatCenter < player.leftLimit || boatCenter > player.rightLimit){
+			GameData.penalties[0] += Gdx.graphics.getDeltaTime();
+		}
+
+		// Update the penalties for the opponents, if they are outside the lane
+		for (int i = 0; i < 3; i++){
+			boatCenter = opponents[i].boatSprite.getX() + opponents[i].boatSprite.getWidth() / 2;
+			if (!opponents[i].hasFinished() && boatCenter < opponents[i].leftLimit || boatCenter > opponents[i].rightLimit){
+				GameData.penalties[i + 1] += Gdx.graphics.getDeltaTime();
+			}
+		}
+	}
+
 
 	/**
 	 * This method marks all the boats that haven't finished the race as dnfs
@@ -338,7 +354,7 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 			// Update the camera at the player's position
 			updateCamera(player);
 
-			
+			updatePenalties();
 
 			// Update the standings of each boat
 			updateStandings();
