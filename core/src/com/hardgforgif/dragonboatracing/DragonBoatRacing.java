@@ -1,6 +1,7 @@
 package com.hardgforgif.dragonboatracing;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -8,6 +9,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
+import com.hardgforgif.dragonboatracing.UI.EndGameUI;
+import com.hardgforgif.dragonboatracing.UI.GamePlayUI;
+import com.hardgforgif.dragonboatracing.UI.MenuUI;
 import com.hardgforgif.dragonboatracing.UI.ResultsUI;
 import com.hardgforgif.dragonboatracing.core.*;
 import javafx.util.Pair;
@@ -73,6 +77,7 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 		// Initialize the camera
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, w, h);
+		System.out.println(camera.position);
 
 		// Set the app's input processor
 		Gdx.input.setInputProcessor(this);
@@ -192,6 +197,9 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 		}
 	}
 
+	/**
+	 * This method checks the position of all the boats to add penalties if necessary
+	 */
 	private void updatePenalties() {
 		// Update the penalties for the player, if he is outside his lane
 		float boatCenter = player.boatSprite.getX() + player.boatSprite.getWidth() / 2;
@@ -237,10 +245,13 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		// If the game is in the main menu state
-		if (GameData.mainMenu || GameData.choosingBoat){
+		if (GameData.mainMenu || GameData.choosingBoat || GameData.endGame){
+//			System.out.println(mousePosition);
+//			System.out.println(clickPosition);
 			// Draw the UI and wait for the input
 			GameData.currentUI.drawUI(UIbatch, mousePosition, Gdx.graphics.getWidth(), Gdx.graphics.getDeltaTime());
 			GameData.currentUI.getInput(Gdx.graphics.getWidth(), clickPosition);
+
 		}
 
 		// Otherwise, if we are in the game play state
@@ -376,17 +387,35 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 			// Choose which UI to display based on the current state
 			if(!GameData.showResults)
 				GameData.currentUI.drawPlayerUI(UIbatch, player);
-			else{
+			else {
 				GameData.currentUI.drawUI(UIbatch, mousePosition, Gdx.graphics.getWidth(), Gdx.graphics.getDeltaTime());
 				GameData.currentUI.getInput(Gdx.graphics.getWidth(), clickPosition);
 			}
+
 		}
 
-		// Otherwise we need need to prepare for the next leg
+		// Otherwise we need need to reset elements of the game to prepare for the next race
 		else if(GameData.resetGame){
 			player = null;
+			GameData.results.clear();
+			GameData.currentTimer = 0f;
+
+			if (GameData.showResults){
+				GameData.currentLeg += 1;
+				GameData.gamePlay = true;
+				GameData.currentUI = new GamePlayUI();
+
+			}
+
+			else{
+				camera.position.set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
+				camera.update();
+				GameData.currentLeg = 0;
+				GameData.mainMenu = true;
+				GameData.currentUI = new MenuUI();
+			}
 			GameData.resetGame = false;
-			GameData.gamePlay = true;
+
 		}
 
 		// If we haven't clicked anywhere in the last frame, reset the click position

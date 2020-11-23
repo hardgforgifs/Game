@@ -1,6 +1,7 @@
 package com.hardgforgif.dragonboatracing.UI;
 
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -115,15 +116,21 @@ public class ResultsUI extends UI{
     @Override
     public void getInput(float screenWidth, Vector2 mousePos) {
         if(mousePos.x != 0f && mousePos.y != 0f && GameData.results.size() == 4) {
-            if (GameData.currentLeg == 2)
-                Gdx.app.exit();
             GameData.showResults = false;
             GameData.gamePlay = false;
-            GameData.resetGame = true;
-            GameData.currentLeg += 1;
-            GameData.results.clear();
-            GameData.currentTimer = 0f;
-            GameData.currentUI = new GamePlayUI();
+
+            float playerResult = GameData.results.get(GameData.standings[0] - 1).getValue();
+
+            // If the player was dnf or he was in the last place, lose the game
+            if (GameData.currentLeg == 0 || playerResult == Float.MAX_VALUE || GameData.standings[0] == 4){
+                GameData.endGame = true;
+                GameData.currentUI = new EndGameUI();
+            }
+
+            else{
+                GameData.resetGame = true;
+            }
+
         }
     }
 }

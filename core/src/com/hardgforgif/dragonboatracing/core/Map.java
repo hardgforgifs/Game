@@ -147,9 +147,9 @@ public class Map {
     public void createFinishLine(String textureFile){
         finishLineTexture = new Texture(textureFile);
         finishLineSprite = new Sprite(finishLineTexture);
-        float startpoint = lanes[0].getLimitsAt(9000f)[0];
-        float width = lanes[3].getLimitsAt(9000f)[1] - startpoint;
-        finishLineSprite.setPosition(startpoint, 9000f);
+        float startpoint = lanes[0].getLimitsAt(1000f)[0];
+        float width = lanes[3].getLimitsAt(1000f)[1] - startpoint;
+        finishLineSprite.setPosition(startpoint, 1000f);
         finishLineSprite.setSize(width, 50);
     }
 

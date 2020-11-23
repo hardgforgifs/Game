@@ -16,6 +16,7 @@ public class GameData {
     public static boolean gamePlay = false;
     public static boolean showResults = false;
     public static boolean resetGame = false;
+    public static boolean endGame = false;
 
     // Create the game UI and the game music
     public static Music music = Gdx.audio.newMusic(Gdx.files.internal("Vibing.ogg"));
@@ -42,7 +43,7 @@ public class GameData {
     // Boat's penalties
     public static float[] penalties = new float[4];
     // Result of the boat as a Pair<lane number, result>
-    public static List<Pair<Integer,Float>> results = new ArrayList<Pair<Integer,Float>>();
+    public static List<Pair<Integer,Float>> results = new ArrayList<>();
 
     // Current leg and the current timer in the leg
     public static int currentLeg = 0;
@@ -50,4 +51,6 @@ public class GameData {
 
     // Difficulty constants for the AI
     public static float[] difficulty = new float[]{0.9f, 0.95f, 1f};
+
+    // Save the player's state to check if he
 }
