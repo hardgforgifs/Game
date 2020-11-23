@@ -18,8 +18,8 @@ public class ResultsUI extends UI{
     private Texture background;
     private Sprite backgroundSprite;
     private Texture entryTexture;
-    private Sprite[] entrySprites = new Sprite[4];
-    private BitmapFont[] resultFonts = new BitmapFont[4];
+    private Sprite[] entrySprites;
+    private BitmapFont[] resultFonts;
     private BitmapFont titleFont;
     private BitmapFont timer_label;
 
@@ -65,9 +65,10 @@ public class ResultsUI extends UI{
         GameData.results.sort(new Comparator<Pair<Integer, Float>>() {
             @Override
             public int compare(Pair<Integer, Float> o1, Pair<Integer, Float> o2) {
-                if (o1.getValue() > o2.getValue()) {
+                if (o1.getValue() + GameData.penalties[o1.getKey()] > o2.getValue()+ GameData.penalties[o2.getKey()]) {
                     return 1;
-                } else if (o1.getValue().equals(o2.getValue())) {
+                } else if (o1.getValue() + GameData.penalties[o1.getKey()] ==
+                           o2.getValue()+ GameData.penalties[o2.getKey()]) {
                     return 0;
                 } else {
                     return -1;
@@ -77,20 +78,27 @@ public class ResultsUI extends UI{
         for (int i = 0; i < GameData.results.size(); i++){
             int boatNr = GameData.results.get(i).getKey();
             float result = GameData.results.get(i).getValue();
+            float penalties = 0f;
 
             entrySprites[i].draw(batch);
 
             String text = (i + 1) + ". ";
-            if (boatNr == 0)
+            if (boatNr == 0){
                 text += "Player: ";
+            }
+
             else{
                 text += "Opponent" + boatNr + ": ";
             }
+            penalties += GameData.penalties[boatNr];
+            result += penalties;
             if (result != Float.MAX_VALUE)
                 text += result;
             else
                 text += "DNF";
             resultFonts[i].draw(batch, text, entrySprites[i].getX() + 50,  entrySprites[i].getY() + 30);
+            resultFonts[i].draw(batch, "Penalties: " + GameData.penalties[boatNr],
+                             entrySprites[i].getX() + 300, entrySprites[i].getY() + 30);
 
         }
         timer_label.draw(batch, String.valueOf(Math.round(GameData.currentTimer * 10.0) / 10.0), 10, 700);

@@ -29,8 +29,8 @@ public class GameData {
 
     // Create a list of possible boat stats
     // Ordered by: robustness, speed, acceleration, maneuverability
-    public static float[][] boatsStats = new float[][] {{100, 100, 100, 80}, {70, 100, 130, 60},
-                                                        {110, 95, 95, 130}, {80, 110, 90, 55}};
+    public static float[][] boatsStats = new float[][] {{120, 100, 100, 80}, {55, 100, 130, 60},
+                                                        {90, 100, 100, 130}, {65, 110, 90, 55}};
 
     // Store information about each lane's boat
     // Boat's starting location
@@ -39,6 +39,8 @@ public class GameData {
     public static int[] boatTypes = new int[4];
     // Boat's standing
     public static int[] standings = new int[4];
+    // Boat's penalties
+    public static float[] penalties = new float[4];
     // Result of the boat as a Pair<lane number, result>
     public static List<Pair<Integer,Float>> results = new ArrayList<Pair<Integer,Float>>();
 
