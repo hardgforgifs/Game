@@ -338,6 +338,8 @@ public class DragonBoatRacing2 extends ApplicationAdapter implements InputProces
 			// Update the camera at the player's position
 			updateCamera(player);
 
+			
+
 			// Update the standings of each boat
 			updateStandings();
 
