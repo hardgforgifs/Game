@@ -75,8 +75,9 @@ public class ChoosingUI extends UI{
 
     @Override
     public void drawUI(Batch batch, Vector2 mousePos, float screenWidth, float delta) {
-        //Checks if the mouse is hovering over a boat and updates the bars displayed as appropriate
+        //Check if the mouse is hovering over a boat, and update the bars displayed
         for (int i = 0; i < 4; i++){
+            // Get the position of the boat
             float boatX = boat_sprites[i].getX() + boat_sprites[i].getWidth() / 2 -
                     boat_sprites[i].getWidth() / 2 * boat_sprites[i].getScaleX();
             float boatY = boat_sprites[i].getY() + boat_sprites[i].getHeight() / 2 -
@@ -84,6 +85,7 @@ public class ChoosingUI extends UI{
             float boatWidth = boat_sprites[i].getWidth() * boat_sprites[i].getScaleX();
             float boatHeight = boat_sprites[i].getHeight() * boat_sprites[i].getScaleY();
 
+            // Check if the mouse is hovered over it
             if (mousePos.x > boatX && mousePos.x < boatX + boatWidth &&
                     mousePos.y > boatY && mousePos.y < boatY + boatHeight){
                 current_stats[0] = GameData.boatsStats[i][0];
@@ -98,6 +100,7 @@ public class ChoosingUI extends UI{
         scrollingBackground.updateAndRender(delta, batch);
         background_sprite.draw(batch);
 
+        // Display the bars based on the selected boat
         for (int i = 0; i < 4; i++){
             bar_sprites[i].setSize(full_bar * (current_stats[i]/100), 30);
             bar_sprites[i].draw(batch);
@@ -108,6 +111,8 @@ public class ChoosingUI extends UI{
         label.draw(batch, "Acceleration:", 260, 525);
         label.draw(batch, "Maneuverability:", 260, 475);
 
+
+        // Display the boats
         for (int i = 0; i < 4; i++){
             batch.draw(boat_sprites[i], boat_sprites[i].getX(), boat_sprites[i].getY(), boat_sprites[i].getOriginX(),
                     boat_sprites[i].getOriginY(),
@@ -121,6 +126,7 @@ public class ChoosingUI extends UI{
 
     @Override
     public void getInput(float screenWidth, Vector2 mousePos) {
+        // Check which of the boat was pressed
         for (int i = 0; i < 4; i++){
             float boatX = boat_sprites[i].getX() + boat_sprites[i].getWidth() / 2 -
                     boat_sprites[i].getWidth() / 2 * boat_sprites[i].getScaleX();
@@ -131,37 +137,31 @@ public class ChoosingUI extends UI{
 
             if (mousePos.x > boatX && mousePos.x < boatX + boatWidth &&
                     mousePos.y > boatY && mousePos.y < boatY + boatHeight){
+                // Set the player's boat type based on the clicked boat
                 GameData.boatTypes[0] = i;
 
+                // Randomise the AI boats
                 ArrayList<Integer> intList = new ArrayList<Integer>(){{add(0); add(1); add(2); add(3);}};
                 intList.remove(new Integer(i));
                 Collections.shuffle(intList);
-
                 GameData.boatTypes[1] = intList.get(0);
                 GameData.boatTypes[2] = intList.get(1);
                 GameData.boatTypes[3] = intList.get(2);
 
+                // Change the music
                 GameData.music.stop();
                 GameData.music = Gdx.audio.newMusic(Gdx.files.internal("Love_Drama.ogg"));
 
+                // Set the game state to the game play state
                 GameData.choosingBoat = false;
                 GameData.gamePlay = true;
                 GameData.currentUI = new GamePlayUI();
             }
         }
+
     }
 
     @Override
     public void drawPlayerUI(Batch batch, Player playerBoat) {
-
     }
-
-
-//    public void dispose() {
-//        label.dispose();
-//        boat.dispose();
-//        background.dispose();
-//        bar.dispose();
-//        background.dispose();
-//    }
 }

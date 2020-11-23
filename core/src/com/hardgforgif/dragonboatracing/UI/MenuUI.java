@@ -49,6 +49,7 @@ public class MenuUI extends UI {
         scrollingBackground.updateAndRender(delta, batch);
         batch.draw(logo, screenWidth / 2 - LOGO_WIDTH / 2, LOGO_Y, LOGO_WIDTH, LOGO_HEIGHT);
 
+        // If the mouse is not hovered over the buttons, draw the unselected buttons
         float x = screenWidth / 2 - PLAY_BUTTON_WIDTH / 2;
         if (
                 mousePos.x < x + PLAY_BUTTON_WIDTH && mousePos.x > x &&
@@ -61,6 +62,7 @@ public class MenuUI extends UI {
             batch.draw(playButtonInactive, x, PLAY_BUTTON_Y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
         }
 
+        // Otherwise draw the selected buttons
         x = screenWidth / 2 - EXIT_BUTTON_WIDTH / 2;
         if (
                 mousePos.x < x + EXIT_BUTTON_WIDTH && mousePos.x > x &&
@@ -83,6 +85,7 @@ public class MenuUI extends UI {
 
     @Override
     public void getInput(float screenWidth, Vector2 clickPos) {
+        // If the play button is clicked
         float x = screenWidth / 2 - PLAY_BUTTON_WIDTH / 2;
         if (
                 clickPos.x < x + PLAY_BUTTON_WIDTH && clickPos.x > x &&
@@ -90,11 +93,13 @@ public class MenuUI extends UI {
                         clickPos.y < PLAY_BUTTON_Y + PLAY_BUTTON_HEIGHT &&
                         clickPos.y > PLAY_BUTTON_Y
         ) {
+            // Switch to the choosing state
             GameData.mainMenu = false;
             GameData.choosingBoat = true;
             GameData.currentUI = new ChoosingUI();
         }
 
+        // If the exit button is clicked, close the game
         x = screenWidth / 2 - EXIT_BUTTON_WIDTH / 2;
         if (clickPos.x < x + EXIT_BUTTON_WIDTH && clickPos.x > x &&
                 clickPos.y < EXIT_BUTTON_Y + EXIT_BUTTON_HEIGHT &&

@@ -190,7 +190,8 @@ public class AI extends Boat{
         // Update the limits
         updateLimits();
 
-        stamina -= 0.8 * delta;
+        if (stamina > 30f)
+            stamina -= 1.5 * delta;
 
     }
 }

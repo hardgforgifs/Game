@@ -144,12 +144,21 @@ public class Map {
         lanes[3].spawnObstacles(world, mapHeight / GameData.PIXELS_TO_TILES);
     }
 
+    /**
+     * Creates the finish line at a fixed position
+     * @param textureFile The texture oof the finish line
+     */
     public void createFinishLine(String textureFile){
+        // Create the texture and the sprite of the finish line
         finishLineTexture = new Texture(textureFile);
         finishLineSprite = new Sprite(finishLineTexture);
-        float startpoint = lanes[0].getLimitsAt(1000f)[0];
-        float width = lanes[3].getLimitsAt(1000f)[1] - startpoint;
-        finishLineSprite.setPosition(startpoint, 1000f);
+
+        // Find out where it's going to start at, and how wide it will be, based on the limits of the edge lanes
+        float startpoint = lanes[0].getLimitsAt(9000f)[0];
+        float width = lanes[3].getLimitsAt(9000f)[1] - startpoint;
+
+        // Set it's new found position and width
+        finishLineSprite.setPosition(startpoint, 9000f);
         finishLineSprite.setSize(width, 50);
     }
 

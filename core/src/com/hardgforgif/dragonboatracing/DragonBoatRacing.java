@@ -77,7 +77,6 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 		// Initialize the camera
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, w, h);
-		System.out.println(camera.position);
 
 		// Set the app's input processor
 		Gdx.input.setInputProcessor(this);
@@ -172,7 +171,7 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 	 */
 	private void checkForResults(){
 		// If the player has finished and we haven't added his result already...
-		if(player.hasFinished() && player.acceleration > 0){
+		if(player.hasFinished() && player.acceleration > 0 && GameData.results.size() < 4){
 			// Add the result to the list with key 0, the player's lane
 			GameData.results.add(new Pair<>(0, GameData.currentTimer));
 
@@ -187,7 +186,7 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 		// Iterate through the AI to see if any of them finished the race
 		for (int i = 0; i < 3; i++){
 			// If the AI has finished and we haven't added his result already...
-			if(opponents[i].hasFinished() && opponents[i].acceleration > 0){
+			if(opponents[i].hasFinished() && opponents[i].acceleration > 0 && GameData.results.size() < 4){
 				// Add the result to the list with the his lane numer as key
 				GameData.results.add(new Pair<>(i + 1, GameData.currentTimer));
 
@@ -203,14 +202,14 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 	private void updatePenalties() {
 		// Update the penalties for the player, if he is outside his lane
 		float boatCenter = player.boatSprite.getX() + player.boatSprite.getWidth() / 2;
-		if (!player.hasFinished() && boatCenter < player.leftLimit || boatCenter > player.rightLimit){
+		if (!player.hasFinished() && (boatCenter < player.leftLimit || boatCenter > player.rightLimit)){
 			GameData.penalties[0] += Gdx.graphics.getDeltaTime();
 		}
 
 		// Update the penalties for the opponents, if they are outside the lane
 		for (int i = 0; i < 3; i++){
 			boatCenter = opponents[i].boatSprite.getX() + opponents[i].boatSprite.getWidth() / 2;
-			if (!opponents[i].hasFinished() && boatCenter < opponents[i].leftLimit || boatCenter > opponents[i].rightLimit){
+			if (!opponents[i].hasFinished() && (boatCenter < opponents[i].leftLimit || boatCenter > opponents[i].rightLimit)){
 				GameData.penalties[i + 1] += Gdx.graphics.getDeltaTime();
 			}
 		}
@@ -222,7 +221,7 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 	 */
 	private void dnfRemainingBoats() {
 		// If the player hasn't finished
-		if (!player.hasFinished()){
+		if (!player.hasFinished() && player.robustness > 0 && GameData.results.size() < 4){
 			// Add a dnf result
 			GameData.results.add(new Pair<>(0, Float.MAX_VALUE));
 
@@ -233,7 +232,7 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 
 		// Iterate through the AI and add a dnf result for any who haven't finished
 		for (int i = 0; i < 3; i++){
-			if (!opponents[i].hasFinished())
+			if (!opponents[i].hasFinished() && opponents[i].robustness > 0 && GameData.results.size() < 4)
 				GameData.results.add(new Pair<>(i + 1, Float.MAX_VALUE));
 		}
 	}
@@ -244,10 +243,8 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 		Gdx.gl.glClearColor(0.15f, 0.15f, 0.3f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		// If the game is in the main menu state
+		// If the game is in one of the static state
 		if (GameData.mainMenu || GameData.choosingBoat || GameData.endGame){
-//			System.out.println(mousePosition);
-//			System.out.println(clickPosition);
 			// Draw the UI and wait for the input
 			GameData.currentUI.drawUI(UIbatch, mousePosition, Gdx.graphics.getWidth(), Gdx.graphics.getDeltaTime());
 			GameData.currentUI.getInput(Gdx.graphics.getWidth(), clickPosition);
@@ -298,7 +295,7 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 					player.current_speed -= 30f;
 
 					// If all the health is lost
-					if(player.robustness <= 0){
+					if(player.robustness <= 0 && GameData.results.size() < 4){
 						// Remove the body from the world, but keep it's sprite in place
 						world[GameData.currentLeg].destroyBody(player.boatBody);
 
@@ -319,7 +316,7 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 							opponents[i].robustness -= 10f;
 							opponents[i].current_speed -= 30f;
 
-							if(opponents[i].robustness < 0){
+							if(opponents[i].robustness < 0&& GameData.results.size() < 4){
 								world[GameData.currentLeg].destroyBody(opponents[i].boatBody);
 								GameData.results.add(new Pair<>(i + 1, Float.MAX_VALUE));
 							}
@@ -339,7 +336,7 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 			// Update the timer
 			GameData.currentTimer += Gdx.graphics.getDeltaTime();
 
-			// Update the player's and the AI movement
+			// Update the player's and the AI's movement
 			player.updatePlayer(pressedKeys, Gdx.graphics.getDeltaTime());
 			for (AI opponent : opponents)
 				opponent.updateAI(Gdx.graphics.getDeltaTime());
@@ -400,13 +397,15 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 			GameData.results.clear();
 			GameData.currentTimer = 0f;
 
+			// If we're coming from the result screen, then we need to advance to the next leg
 			if (GameData.showResults){
 				GameData.currentLeg += 1;
+				GameData.showResults = false;
 				GameData.gamePlay = true;
 				GameData.currentUI = new GamePlayUI();
 
 			}
-
+			// Otherwise we're coming from the endgame screen so we need to return to the main menu
 			else{
 				camera.position.set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
 				camera.update();

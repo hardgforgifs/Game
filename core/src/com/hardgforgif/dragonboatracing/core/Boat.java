@@ -145,7 +145,7 @@ public abstract class Boat {
      * @return True if the boat passed the finish line, false otherwise
      */
     public boolean hasFinished(){
-        if (boatSprite.getY() + boatSprite.getHeight() / 2 > 1000f)
+        if (boatSprite.getY() + boatSprite.getHeight() / 2 > 9000f)
             return true;
         return false;
     }
@@ -157,8 +157,11 @@ public abstract class Boat {
         current_speed += 0.15f * (acceleration/90)  * (stamina/100);
         if (current_speed > speed)
             current_speed = speed;
+        if (stamina < 70f && current_speed > speed * 0.8f)
+            current_speed = speed * 0.8f;
         if (current_speed < 0)
             current_speed = 0;
+
 
         // Get the coordinates of the center of the boat
         float originX = boatBody.getPosition().x * GameData.METERS_TO_PIXELS;

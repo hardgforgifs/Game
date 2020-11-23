@@ -42,8 +42,10 @@ public class EndGameUI extends UI{
     public void drawUI(Batch batch, Vector2 mousePos, float screenWidth, float delta) {
         batch.begin();
         scrollingBackground.updateAndRender(delta, batch);
-        if (GameData.currentLeg == 0 && GameData.standings[0] == 1)
+        // If this was the last leg and the player won, show the victory screen
+        if (GameData.currentLeg == 2 && GameData.standings[0] == 1)
             victorySprite.draw(batch);
+        // Otherwise, the game is over with a loss
         else
             gameOverSprite.draw(batch);
         batch.end();
@@ -57,9 +59,13 @@ public class EndGameUI extends UI{
 
     @Override
     public void getInput(float screenWidth, Vector2 mousePos) {
-        if(mousePos.x != 0f && mousePos.y != 0f && GameData.results.size() == 4) {
+        // When the user clicks on the screen
+        if(mousePos.x != 0f && mousePos.y != 0f) {
+            // Reset the game, after which the game will return to the main menu state
             GameData.endGame = false;
             GameData.resetGame = true;
+
+            // Switch the music to the main menu music
             GameData.music.stop();
             GameData.music = Gdx.audio.newMusic(Gdx.files.internal("Vibing.ogg"));
         }

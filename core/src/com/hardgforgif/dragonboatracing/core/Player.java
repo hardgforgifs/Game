@@ -35,7 +35,8 @@ public class Player extends Boat{
 
         // Update the lane limits
         updateLimits();
-        stamina -= 1.5 * delta;
+        if (stamina > 30f)
+            stamina -= 1.5 * delta;
 
     }
 }

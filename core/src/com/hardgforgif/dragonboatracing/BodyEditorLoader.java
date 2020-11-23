@@ -1,3 +1,7 @@
+/**
+ * This class is required by the box2D physics engine to function
+ */
+
 package com.hardgforgif.dragonboatracing;///package aurelienribon.bodyeditor;
 
 import com.badlogic.gdx.files.FileHandle;
