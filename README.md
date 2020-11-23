@@ -1,5 +1,7 @@
 # Dragon Boat Racing 2021
 
+![Dragon Boat Racing 2021 Logo](https://github.com/hardgforgifs/game/raw/master/core/assets/Title.png)
+
 The latest and greatest racing game!
 
 ## Developing (IntelliJ IDEA)
