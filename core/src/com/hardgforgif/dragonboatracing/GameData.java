@@ -11,16 +11,16 @@ import java.util.List;
 
 public class GameData {
     // Create the game state variables
-    public static boolean mainMenu = true;
-    public static boolean choosingBoat = false;
-    public static boolean gamePlay = false;
-    public static boolean showResults = false;
-    public static boolean resetGame = false;
-    public static boolean endGame = false;
+    public static boolean mainMenuState = true;
+    public static boolean choosingBoatState = false;
+    public static boolean gamePlayState = false;
+    public static boolean showResultsState = false;
+    public static boolean resetGameState = false;
+    public static boolean GameOverState = false;
 
     // Create the game UI and the game music
-    public static Music music = Gdx.audio.newMusic(Gdx.files.internal("Vibing.ogg"));
     public static UI currentUI = new MenuUI();
+    public static Music music = Gdx.audio.newMusic(Gdx.files.internal("Vibing.ogg"));
 
     // Set the rations between the pixels, meters and tiles
     public final static float METERS_TO_PIXELS = 100f;
@@ -51,6 +51,4 @@ public class GameData {
 
     // Difficulty constants for the AI
     public static float[] difficulty = new float[]{0.92f, 0.97f, 1f};
-
-    // Save the player's state to check if he
 }

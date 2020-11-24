@@ -12,7 +12,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.hardgforgif.dragonboatracing.GameData;
 import com.hardgforgif.dragonboatracing.BodyEditorLoader;
 
-public abstract class Boat {
+public class Boat {
     // Boat specs
     public float robustness;
     public float stamina = 120f;
@@ -167,7 +167,7 @@ public abstract class Boat {
         float originX = boatBody.getPosition().x * GameData.METERS_TO_PIXELS;
         float originY = boatBody.getPosition().y * GameData.METERS_TO_PIXELS;
 
-        // First we need to calculate the position of the playear's head (the front of the boat)
+        // First we need to calculate the position of the player's head (the front of the boat)
         // So we can move him based on this and not the center of the boat
         Vector2 boatHeadPos = new Vector2();
         float radius = boatSprite.getHeight()/2;

@@ -10,16 +10,16 @@ import com.hardgforgif.dragonboatracing.GameData;
 import com.hardgforgif.dragonboatracing.core.Player;
 
 
-public class EndGameUI extends UI{
+public class GameOverUI extends UI{
     private Texture gameOverTexture;
     private Sprite gameOverSprite;
     private Texture victoryTexture;
     private Sprite victorySprite;
 
-    ScrollingBackground scrollingBackground = new ScrollingBackground();
+    private ScrollingBackground scrollingBackground = new ScrollingBackground();
 
 
-    public EndGameUI(){
+    public GameOverUI(){
         scrollingBackground.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         scrollingBackground.setSpeedFixed(true);
         scrollingBackground.setSpeed(ScrollingBackground.DEFAULT_SPEED);
@@ -62,8 +62,8 @@ public class EndGameUI extends UI{
         // When the user clicks on the screen
         if(mousePos.x != 0f && mousePos.y != 0f) {
             // Reset the game, after which the game will return to the main menu state
-            GameData.endGame = false;
-            GameData.resetGame = true;
+            GameData.GameOverState = false;
+            GameData.resetGameState = true;
 
             // Switch the music to the main menu music
             GameData.music.stop();

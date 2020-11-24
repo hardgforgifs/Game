@@ -18,16 +18,13 @@ public class ChoosingUI extends UI{
     private Sprite background_sprite;
 
     private Texture bar;
-    private Sprite[] bar_sprites = new Sprite[4];
-    public static float[][] boatsStatsBarSizes = new float[][] {{100, 100, 100, 100}, {70, 100, 120, 80},   //robustness, speed, acceleration, maneuverability
-                                            {110, 110, 90, 90}, {100, 90, 90, 130}};
-
+    private Sprite[] barSprites = new Sprite[4];
     private Texture boatTexture;
-    private Sprite[] boat_sprites = new Sprite[4];
+    private Sprite[] boatSprites = new Sprite[4];
 
     private BitmapFont label;
 
-    private float[] current_stats = new float[4];
+    private float[] currentStats = new float[4];
 
     ScrollingBackground scrollingBackground = new ScrollingBackground();
 
@@ -50,26 +47,26 @@ public class ChoosingUI extends UI{
 
 
         bar = new Texture("Robustness_bar.png");
-        bar_sprites[0] = new Sprite(bar);
-        bar_sprites[0].setPosition(430,600);
+        barSprites[0] = new Sprite(bar);
+        barSprites[0].setPosition(430,600);
 
         bar = new Texture("Speed_bar.png");
-        bar_sprites[1] = new Sprite(bar);
-        bar_sprites[1].setPosition(430,550);
+        barSprites[1] = new Sprite(bar);
+        barSprites[1].setPosition(430,550);
 
         bar = new Texture("Acceleration_bar.png");
-        bar_sprites[2] = new Sprite(bar);
-        bar_sprites[2].setPosition(430,500);
+        barSprites[2] = new Sprite(bar);
+        barSprites[2].setPosition(430,500);
 
         bar = new Texture("Maneuverability_bar.png");
-        bar_sprites[3] = new Sprite(bar);
-        bar_sprites[3].setPosition(430,450);
+        barSprites[3] = new Sprite(bar);
+        barSprites[3].setPosition(430,450);
 
         for (int i = 1; i <= 4; i++){
             boatTexture = new Texture("Boat" + i + ".png");
-            boat_sprites[i - 1] = new Sprite(boatTexture);
-            boat_sprites[i - 1].scale(-0.6f);
-            boat_sprites[i - 1].setPosition(150 + 300f * (i - 1), -200f);
+            boatSprites[i - 1] = new Sprite(boatTexture);
+            boatSprites[i - 1].scale(-0.6f);
+            boatSprites[i - 1].setPosition(150 + 300f * (i - 1), -200f);
         }
     }
 
@@ -78,20 +75,20 @@ public class ChoosingUI extends UI{
         //Check if the mouse is hovering over a boat, and update the bars displayed
         for (int i = 0; i < 4; i++){
             // Get the position of the boat
-            float boatX = boat_sprites[i].getX() + boat_sprites[i].getWidth() / 2 -
-                    boat_sprites[i].getWidth() / 2 * boat_sprites[i].getScaleX();
-            float boatY = boat_sprites[i].getY() + boat_sprites[i].getHeight() / 2 -
-                    boat_sprites[i].getHeight() / 2 * boat_sprites[i].getScaleY();
-            float boatWidth = boat_sprites[i].getWidth() * boat_sprites[i].getScaleX();
-            float boatHeight = boat_sprites[i].getHeight() * boat_sprites[i].getScaleY();
+            float boatX = boatSprites[i].getX() + boatSprites[i].getWidth() / 2 -
+                    boatSprites[i].getWidth() / 2 * boatSprites[i].getScaleX();
+            float boatY = boatSprites[i].getY() + boatSprites[i].getHeight() / 2 -
+                    boatSprites[i].getHeight() / 2 * boatSprites[i].getScaleY();
+            float boatWidth = boatSprites[i].getWidth() * boatSprites[i].getScaleX();
+            float boatHeight = boatSprites[i].getHeight() * boatSprites[i].getScaleY();
 
             // Check if the mouse is hovered over it
             if (mousePos.x > boatX && mousePos.x < boatX + boatWidth &&
                     mousePos.y > boatY && mousePos.y < boatY + boatHeight){
-                current_stats[0] = GameData.boatsStats[i][0];
-                current_stats[1] = GameData.boatsStats[i][1];
-                current_stats[2] = GameData.boatsStats[i][2];
-                current_stats[3] = GameData.boatsStats[i][3];
+                currentStats[0] = GameData.boatsStats[i][0];
+                currentStats[1] = GameData.boatsStats[i][1];
+                currentStats[2] = GameData.boatsStats[i][2];
+                currentStats[3] = GameData.boatsStats[i][3];
             }
         }
 
@@ -102,8 +99,8 @@ public class ChoosingUI extends UI{
 
         // Display the bars based on the selected boat
         for (int i = 0; i < 4; i++){
-            bar_sprites[i].setSize(full_bar * (current_stats[i]/100), 30);
-            bar_sprites[i].draw(batch);
+            barSprites[i].setSize(full_bar * (currentStats[i]/100), 30);
+            barSprites[i].draw(batch);
         }
 
         label.draw(batch, "Robustness:", 260, 625);
@@ -114,10 +111,10 @@ public class ChoosingUI extends UI{
 
         // Display the boats
         for (int i = 0; i < 4; i++){
-            batch.draw(boat_sprites[i], boat_sprites[i].getX(), boat_sprites[i].getY(), boat_sprites[i].getOriginX(),
-                    boat_sprites[i].getOriginY(),
-                    boat_sprites[i].getWidth(), boat_sprites[i].getHeight(), boat_sprites[i].getScaleX(),
-                    boat_sprites[i].getScaleY(), boat_sprites[i].getRotation());
+            batch.draw(boatSprites[i], boatSprites[i].getX(), boatSprites[i].getY(), boatSprites[i].getOriginX(),
+                    boatSprites[i].getOriginY(),
+                    boatSprites[i].getWidth(), boatSprites[i].getHeight(), boatSprites[i].getScaleX(),
+                    boatSprites[i].getScaleY(), boatSprites[i].getRotation());
         }
         batch.end();
 
@@ -128,12 +125,12 @@ public class ChoosingUI extends UI{
     public void getInput(float screenWidth, Vector2 mousePos) {
         // Check which of the boat was pressed
         for (int i = 0; i < 4; i++){
-            float boatX = boat_sprites[i].getX() + boat_sprites[i].getWidth() / 2 -
-                    boat_sprites[i].getWidth() / 2 * boat_sprites[i].getScaleX();
-            float boatY = boat_sprites[i].getY() + boat_sprites[i].getHeight() / 2 -
-                    boat_sprites[i].getHeight() / 2 * boat_sprites[i].getScaleY();
-            float boatWidth = boat_sprites[i].getWidth() * boat_sprites[i].getScaleX();
-            float boatHeight = boat_sprites[i].getHeight() * boat_sprites[i].getScaleY();
+            float boatX = boatSprites[i].getX() + boatSprites[i].getWidth() / 2 -
+                    boatSprites[i].getWidth() / 2 * boatSprites[i].getScaleX();
+            float boatY = boatSprites[i].getY() + boatSprites[i].getHeight() / 2 -
+                    boatSprites[i].getHeight() / 2 * boatSprites[i].getScaleY();
+            float boatWidth = boatSprites[i].getWidth() * boatSprites[i].getScaleX();
+            float boatHeight = boatSprites[i].getHeight() * boatSprites[i].getScaleY();
 
             if (mousePos.x > boatX && mousePos.x < boatX + boatWidth &&
                     mousePos.y > boatY && mousePos.y < boatY + boatHeight){
@@ -153,8 +150,8 @@ public class ChoosingUI extends UI{
                 GameData.music = Gdx.audio.newMusic(Gdx.files.internal("Love_Drama.ogg"));
 
                 // Set the game state to the game play state
-                GameData.choosingBoat = false;
-                GameData.gamePlay = true;
+                GameData.choosingBoatState = false;
+                GameData.gamePlayState = true;
                 GameData.currentUI = new GamePlayUI();
             }
         }

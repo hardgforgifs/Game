@@ -1,7 +1,6 @@
 package com.hardgforgif.dragonboatracing.UI;
 
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -22,7 +21,7 @@ public class ResultsUI extends UI{
     private Sprite[] entrySprites;
     private BitmapFont[] resultFonts;
     private BitmapFont titleFont;
-    private BitmapFont timer_label;
+    private BitmapFont timerFont;
 
     public ResultsUI(){
         entrySprites = new Sprite[4];
@@ -30,9 +29,9 @@ public class ResultsUI extends UI{
         titleFont = new BitmapFont();
         titleFont.getData().setScale(1.8f);
         titleFont.setColor(Color.BLACK);
-        timer_label = new BitmapFont();
-        timer_label.getData().setScale(1.4f);
-        timer_label.setColor(Color.BLACK);
+        timerFont = new BitmapFont();
+        timerFont.getData().setScale(1.4f);
+        timerFont.setColor(Color.BLACK);
 
 
         background = new Texture(Gdx.files.internal("Background.png"));
@@ -111,7 +110,7 @@ public class ResultsUI extends UI{
                              entrySprites[i].getX() + 300, entrySprites[i].getY() + 30);
 
         }
-        timer_label.draw(batch, String.valueOf(Math.round(GameData.currentTimer * 10.0) / 10.0), 10, 700);
+        timerFont.draw(batch, String.valueOf(Math.round(GameData.currentTimer * 10.0) / 10.0), 10, 700);
         batch.end();
 
         playMusic();
@@ -126,18 +125,18 @@ public class ResultsUI extends UI{
     public void getInput(float screenWidth, Vector2 mousePos) {
         // When the user clicks anywhere on the screen, switch the game state as necessary
         if(mousePos.x != 0f && mousePos.y != 0f && GameData.results.size() == 4) {
-            GameData.gamePlay = false;
+            GameData.gamePlayState = false;
             float playerResult = GameData.results.get(GameData.standings[0] - 1).getValue();
 
             // If the game is over due to player's dnf or victory, switch to the endgame screen
             if (GameData.currentLeg == 2 || playerResult == Float.MAX_VALUE || GameData.standings[0] == 4){
-                GameData.showResults = false;
-                GameData.endGame = true;
-                GameData.currentUI = new EndGameUI();
+                GameData.showResultsState = false;
+                GameData.GameOverState = true;
+                GameData.currentUI = new GameOverUI();
             }
             // Otherwise prepare for the next leg
             else{
-                GameData.resetGame = true;
+                GameData.resetGameState = true;
             }
 
         }

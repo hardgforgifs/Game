@@ -159,7 +159,7 @@ public class Map {
 
         // Set it's new found position and width
         finishLineSprite.setPosition(startpoint, 9000f);
-        finishLineSprite.setSize(width, 50);
+        finishLineSprite.setSize(width, 100);
     }
 
 }

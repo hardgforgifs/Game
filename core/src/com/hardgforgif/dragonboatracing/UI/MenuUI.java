@@ -94,8 +94,8 @@ public class MenuUI extends UI {
                         clickPos.y > PLAY_BUTTON_Y
         ) {
             // Switch to the choosing state
-            GameData.mainMenu = false;
-            GameData.choosingBoat = true;
+            GameData.mainMenuState = false;
+            GameData.choosingBoatState = true;
             GameData.currentUI = new ChoosingUI();
         }
 

@@ -1,7 +1,6 @@
 package com.hardgforgif.dragonboatracing;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -9,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
-import com.hardgforgif.dragonboatracing.UI.EndGameUI;
 import com.hardgforgif.dragonboatracing.UI.GamePlayUI;
 import com.hardgforgif.dragonboatracing.UI.MenuUI;
 import com.hardgforgif.dragonboatracing.UI.ResultsUI;
@@ -18,7 +16,7 @@ import javafx.util.Pair;
 
 import java.util.ArrayList;
 
-public class DragonBoatRacing extends ApplicationAdapter implements InputProcessor {
+public class Game extends ApplicationAdapter implements InputProcessor {
 	private Player player;
 	private AI[] opponents = new AI[3];
 	private Map[] map;
@@ -176,7 +174,7 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 			GameData.results.add(new Pair<>(0, GameData.currentTimer));
 
 			// Transition to the results UI
-			GameData.showResults = true;
+			GameData.showResultsState = true;
 			GameData.currentUI = new ResultsUI();
 
 			// Change the player's acceleration so the boat stops moving
@@ -226,7 +224,7 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 			GameData.results.add(new Pair<>(0, Float.MAX_VALUE));
 
 			// Transition to the showResult screen
-			GameData.showResults = true;
+			GameData.showResultsState = true;
 			GameData.currentUI = new ResultsUI();
 		}
 
@@ -244,7 +242,7 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		// If the game is in one of the static state
-		if (GameData.mainMenu || GameData.choosingBoat || GameData.endGame){
+		if (GameData.mainMenuState || GameData.choosingBoatState || GameData.GameOverState){
 			// Draw the UI and wait for the input
 			GameData.currentUI.drawUI(UIbatch, mousePosition, Gdx.graphics.getWidth(), Gdx.graphics.getDeltaTime());
 			GameData.currentUI.getInput(Gdx.graphics.getWidth(), clickPosition);
@@ -252,7 +250,7 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 		}
 
 		// Otherwise, if we are in the game play state
-		else if(GameData.gamePlay){
+		else if(GameData.gamePlayState){
 			// If it's the first iteration in this state, the boats need to be created at their starting positions
 			if (player == null){
 				// Create the player boat
@@ -303,7 +301,7 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 						GameData.results.add(new Pair<>(0, Float.MAX_VALUE));
 
 						// Transition to the show result screen
-						GameData.showResults = true;
+						GameData.showResultsState = true;
 						GameData.currentUI = new ResultsUI();
 					}
 				}
@@ -372,7 +370,7 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 			if(GameData.results.size() > 0 && GameData.results.size() < 4 &&
 					GameData.currentTimer > GameData.results.get(0).getValue() + 15f){
 				dnfRemainingBoats();
-				GameData.showResults = true;
+				GameData.showResultsState = true;
 				GameData.currentUI = new ResultsUI();
 			}
 			// Otherwise keep checking for new results
@@ -382,7 +380,7 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 
 
 			// Choose which UI to display based on the current state
-			if(!GameData.showResults)
+			if(!GameData.showResultsState)
 				GameData.currentUI.drawPlayerUI(UIbatch, player);
 			else {
 				GameData.currentUI.drawUI(UIbatch, mousePosition, Gdx.graphics.getWidth(), Gdx.graphics.getDeltaTime());
@@ -392,16 +390,16 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 		}
 
 		// Otherwise we need need to reset elements of the game to prepare for the next race
-		else if(GameData.resetGame){
+		else if(GameData.resetGameState){
 			player = null;
 			GameData.results.clear();
 			GameData.currentTimer = 0f;
 
 			// If we're coming from the result screen, then we need to advance to the next leg
-			if (GameData.showResults){
+			if (GameData.showResultsState){
 				GameData.currentLeg += 1;
-				GameData.showResults = false;
-				GameData.gamePlay = true;
+				GameData.showResultsState = false;
+				GameData.gamePlayState = true;
 				GameData.currentUI = new GamePlayUI();
 
 			}
@@ -410,10 +408,10 @@ public class DragonBoatRacing extends ApplicationAdapter implements InputProcess
 				camera.position.set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
 				camera.update();
 				GameData.currentLeg = 0;
-				GameData.mainMenu = true;
+				GameData.mainMenuState = true;
 				GameData.currentUI = new MenuUI();
 			}
-			GameData.resetGame = false;
+			GameData.resetGameState = false;
 
 		}
 
