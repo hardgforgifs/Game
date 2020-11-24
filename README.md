@@ -2,10 +2,10 @@
 
 ![Dragon Boat Racing 2021 Logo](https://github.com/hardgforgifs/game/raw/master/core/assets/Title.png)
 <h1 align="center">
-<img src="https://img.shields.io/github/issues/Baba-Yaga-Bv/Moove?color=green&style=flat-square">
-<img src="https://img.shields.io/github/issues-pr/Baba-Yaga-Bv/Moove?color=yellow&style=flat-square">
-<img src="https://img.shields.io/github/stars/Baba-Yaga-Bv/Moove?color=red&style=flat-square">
-<img src="https://img.shields.io/github/forks/Baba-Yaga-Bv/Moove?color=blue&style=flat-square">
+<img src="https://img.shields.io/github/issues/hardgforgifs/Game?color=green&style=flat-square">
+<img src="https://img.shields.io/github/issues-pr/hardgforgifs/Game?color=yellow&style=flat-square">
+<img src="https://img.shields.io/github/stars/hardgforgifs/Game?color=red&style=flat-square">
+<img src="https://img.shields.io/github/forks/hardgforgifs/Game?color=blue&style=flat-square">
 </h1>
 
 The latest and greatest racing game!
