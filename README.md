@@ -2,10 +2,10 @@
 
 ![Dragon Boat Racing 2021 Logo](https://github.com/hardgforgifs/game/raw/master/core/assets/Title.png)
 <h1 align="center">
-<img src="https://img.shields.io/github/issues/Baba-Yaga-Bv/Moove?color=green&style=flat-square">
-<img src="https://img.shields.io/github/issues-pr/Baba-Yaga-Bv/Moove?color=yellow&style=flat-square">
-<img src="https://img.shields.io/github/stars/Baba-Yaga-Bv/Moove?color=red&style=flat-square">
-<img src="https://img.shields.io/github/forks/Baba-Yaga-Bv/Moove?color=blue&style=flat-square">
+<img src="https://img.shields.io/github/issues/hardgforgifs/Game?color=green&style=flat-square">
+<img src="https://img.shields.io/github/issues-pr/hardgforgifs/Game?color=yellow&style=flat-square">
+<img src="https://img.shields.io/github/stars/hardgforgifs/Game?color=red&style=flat-square">
+<img src="https://img.shields.io/github/forks/hardgforgifs/Game?color=blue&style=flat-square">
 </h1>
 
 The latest and greatest racing game!
@@ -26,3 +26,9 @@ Then select the new configuration, and you will be able to run it.
 ## Dependencies
 
 * openjdk 15?
+
+## Music used
+
+Love Drama (Race Music) Music by <a href="/users/lymzpodcast-18852086/?tab=audio&amp;utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=audio&amp;utm_content=1333">lymzpodcast</a> from <a href="https://pixabay.com/music/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=music&amp;utm_content=1333">Pixabay</a>
+
+Wataboi - Vibin (Menu Music) Music by <a href="/users/wataboi-12344345/?tab=audio&amp;utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=audio&amp;utm_content=1168">Wataboi</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=music&amp;utm_content=1168">Pixabay</a>
