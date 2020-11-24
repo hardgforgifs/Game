@@ -29,6 +29,11 @@ public class ScrollingBackground {
         speedFixed = true;
     }
 
+    /**
+     * Updates and renders the Scrolling background object on a batch
+     * @param deltaTime The time passes since the last frame
+     * @param batch The batch to render to
+     */
     public void updateAndRender (float deltaTime, Batch batch) {
         // speed adjustment to reach goal
         if (speed < targetSpeed) {
@@ -58,10 +63,19 @@ public class ScrollingBackground {
         batch.draw(image, 0, y2, Gdx.graphics.getWidth(), scaledHeight);
     }
 
+    /**
+     * Resize the object to a given size
+     * @param width Width of the object
+     * @param height Height of the object
+     */
     public void resize(int width, int height) {
         imageScale = width / image.getWidth();
     }
 
+    /**
+     * Set the scrolling speed in pixels/sec
+     * @param targetSpeed
+     */
     public void setSpeed(int targetSpeed) {
         this.targetSpeed = targetSpeed;
     }
