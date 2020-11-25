@@ -199,14 +199,14 @@ public class Game extends ApplicationAdapter implements InputProcessor {
 	private void updatePenalties() {
 		// Update the penalties for the player, if he is outside his lane
 		float boatCenter = player.boatSprite.getX() + player.boatSprite.getWidth() / 2;
-		if (!player.hasFinished() && (boatCenter < player.leftLimit || boatCenter > player.rightLimit)){
+		if (!player.hasFinished() && player.robustness > 0 && (boatCenter < player.leftLimit || boatCenter > player.rightLimit)){
 			GameData.penalties[0] += Gdx.graphics.getDeltaTime();
 		}
 
 		// Update the penalties for the opponents, if they are outside the lane
 		for (int i = 0; i < 3; i++){
 			boatCenter = opponents[i].boatSprite.getX() + opponents[i].boatSprite.getWidth() / 2;
-			if (!opponents[i].hasFinished() && (boatCenter < opponents[i].leftLimit || boatCenter > opponents[i].rightLimit)){
+			if (!opponents[i].hasFinished() && opponents[i].robustness > 0 &&(boatCenter < opponents[i].leftLimit || boatCenter > opponents[i].rightLimit)){
 				GameData.penalties[i + 1] += Gdx.graphics.getDeltaTime();
 			}
 		}
@@ -258,7 +258,6 @@ public class Game extends ApplicationAdapter implements InputProcessor {
 						GameData.boatsStats[playerBoatType][2], GameData.boatsStats[playerBoatType][3],
 						playerBoatType, map[GameData.currentLeg].lanes[0]);
 				player.createBoatBody(world[GameData.currentLeg], GameData.startingPoints[0][0], GameData.startingPoints[0][1], "Boat1.json");
-
 				// Create the AI boats
 				for (int i = 1; i <= 3; i++){
 					int AIBoatType = GameData.boatTypes[i];
@@ -329,7 +328,6 @@ public class Game extends ApplicationAdapter implements InputProcessor {
 
 			// Advance the game world physics
 			world[GameData.currentLeg].step(1f/60f, 6, 2);
-
 			// Update the timer
 			GameData.currentTimer += Gdx.graphics.getDeltaTime();
 
@@ -391,6 +389,8 @@ public class Game extends ApplicationAdapter implements InputProcessor {
 		// Otherwise we need need to reset elements of the game to prepare for the next race
 		else if(GameData.resetGameState){
 			player = null;
+			for (int i = 0; i < 3; i++)
+				opponents[i] = null;
 			GameData.results.clear();
 			GameData.currentTimer = 0f;
 			GameData.penalties = new float[4];
@@ -407,6 +407,33 @@ public class Game extends ApplicationAdapter implements InputProcessor {
 			else{
 				camera.position.set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
 				camera.update();
+				// Reset everything for the next game
+				world = new World[3];
+				map = new Map[3];
+				for (int i = 0; i < 3; i++){
+					// Initialize the physics game World
+					world[i] = new World(new Vector2(0f, 0f), true);
+
+					// Initialize the map
+					map[i] = new Map("Map1/Map1.tmx", Gdx.graphics.getWidth());
+
+					// Calculate the ratio between pixels, meters and tiles
+					GameData.TILES_TO_METERS = map[i].getTilesToMetersRatio();
+					GameData.PIXELS_TO_TILES = 1/(GameData.METERS_TO_PIXELS * GameData.TILES_TO_METERS);
+
+					// Create the collision with the land
+					map[i].createMapCollisions("CollisionLayerLeft", world[i]);
+					map[i].createMapCollisions("CollisionLayerRight", world[i]);
+
+					// Create the lanes, and the obstacles in the physics game world
+					map[i].createLanes(world[i]);
+
+					// Create the finish line
+					map[i].createFinishLine("finishLine.png");
+
+					// Create a new collision handler for the world
+					createContactListener(world[i]);
+				}
 				GameData.currentLeg = 0;
 				GameData.mainMenuState = true;
 				GameData.currentUI = new MenuUI();

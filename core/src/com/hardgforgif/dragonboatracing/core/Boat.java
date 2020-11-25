@@ -70,7 +70,6 @@ public class Boat {
 
         // Create the body
         boatBody = world.createBody(bodyDef);
-
         // Mark the body as a boat's body
         boatBody.setUserData(this);
 
