@@ -12,7 +12,6 @@ import com.hardgforgif.dragonboatracing.UI.GamePlayUI;
 import com.hardgforgif.dragonboatracing.UI.MenuUI;
 import com.hardgforgif.dragonboatracing.UI.ResultsUI;
 import com.hardgforgif.dragonboatracing.core.*;
-import javafx.util.Pair;
 
 import java.util.ArrayList;
 
@@ -394,6 +393,7 @@ public class Game extends ApplicationAdapter implements InputProcessor {
 			player = null;
 			GameData.results.clear();
 			GameData.currentTimer = 0f;
+			GameData.penalties = new float[4];
 
 			// If we're coming from the result screen, then we need to advance to the next leg
 			if (GameData.showResultsState){

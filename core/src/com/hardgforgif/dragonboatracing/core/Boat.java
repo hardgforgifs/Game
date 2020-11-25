@@ -145,7 +145,7 @@ public class Boat {
      * @return True if the boat passed the finish line, false otherwise
      */
     public boolean hasFinished(){
-        if (boatSprite.getY() + boatSprite.getHeight() / 2 > 1000f)
+        if (boatSprite.getY() + boatSprite.getHeight() / 2 > 9000f)
             return true;
         return false;
     }
