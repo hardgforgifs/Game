@@ -171,7 +171,7 @@ public class Game extends ApplicationAdapter implements InputProcessor {
 		// If the player has finished and we haven't added his result already...
 		if(player.hasFinished() && player.acceleration > 0 && GameData.results.size() < 4){
 			// Add the result to the list with key 0, the player's lane
-			GameData.results.add(new Pair<>(0, GameData.currentTimer));
+			GameData.results.add(new Float[]{0f, GameData.currentTimer});
 
 			// Transition to the results UI
 			GameData.showResultsState = true;
@@ -186,7 +186,7 @@ public class Game extends ApplicationAdapter implements InputProcessor {
 			// If the AI has finished and we haven't added his result already...
 			if(opponents[i].hasFinished() && opponents[i].acceleration > 0 && GameData.results.size() < 4){
 				// Add the result to the list with the his lane numer as key
-				GameData.results.add(new Pair<>(i + 1, GameData.currentTimer));
+				GameData.results.add(new Float[]{Float.valueOf(i + 1), GameData.currentTimer});
 
 				// Change the AI's acceleration so the boat stops moving
 				opponents[i].acceleration = -200f;
@@ -221,7 +221,7 @@ public class Game extends ApplicationAdapter implements InputProcessor {
 		// If the player hasn't finished
 		if (!player.hasFinished() && player.robustness > 0 && GameData.results.size() < 4){
 			// Add a dnf result
-			GameData.results.add(new Pair<>(0, Float.MAX_VALUE));
+			GameData.results.add(new Float[]{0f, Float.MAX_VALUE});
 
 			// Transition to the showResult screen
 			GameData.showResultsState = true;
@@ -231,7 +231,7 @@ public class Game extends ApplicationAdapter implements InputProcessor {
 		// Iterate through the AI and add a dnf result for any who haven't finished
 		for (int i = 0; i < 3; i++){
 			if (!opponents[i].hasFinished() && opponents[i].robustness > 0 && GameData.results.size() < 4)
-				GameData.results.add(new Pair<>(i + 1, Float.MAX_VALUE));
+				GameData.results.add(new Float[]{Float.valueOf(i + 1), Float.MAX_VALUE});
 		}
 	}
 
@@ -298,7 +298,7 @@ public class Game extends ApplicationAdapter implements InputProcessor {
 						world[GameData.currentLeg].destroyBody(player.boatBody);
 
 						// Add a DNF result
-						GameData.results.add(new Pair<>(0, Float.MAX_VALUE));
+						GameData.results.add(new Float[]{0f, Float.MAX_VALUE});
 
 						// Transition to the show result screen
 						GameData.showResultsState = true;
@@ -316,7 +316,7 @@ public class Game extends ApplicationAdapter implements InputProcessor {
 
 							if(opponents[i].robustness < 0&& GameData.results.size() < 4){
 								world[GameData.currentLeg].destroyBody(opponents[i].boatBody);
-								GameData.results.add(new Pair<>(i + 1, Float.MAX_VALUE));
+								GameData.results.add(new Float[]{Float.valueOf(i + 1), Float.MAX_VALUE});
 							}
 						}
 
@@ -368,7 +368,7 @@ public class Game extends ApplicationAdapter implements InputProcessor {
 			// If it's been 15 seconds since the winner completed the race, dnf all boats who haven't finished yet
 			// Then transition to the result state
 			if(GameData.results.size() > 0 && GameData.results.size() < 4 &&
-					GameData.currentTimer > GameData.results.get(0).getValue() + 15f){
+					GameData.currentTimer > GameData.results.get(0)[1] + 15f){
 				dnfRemainingBoats();
 				GameData.showResultsState = true;
 				GameData.currentUI = new ResultsUI();

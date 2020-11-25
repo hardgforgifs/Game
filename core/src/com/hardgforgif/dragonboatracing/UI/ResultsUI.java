@@ -64,13 +64,13 @@ public class ResultsUI extends UI{
                 backgroundSprite.getY() + backgroundSprite.getHeight() - 50);
 
         // Sort the currently available results in ascending order
-        GameData.results.sort(new Comparator<Pair<Integer, Float>>() {
+        GameData.results.sort(new Comparator<Float[]>() {
             @Override
-            public int compare(Pair<Integer, Float> o1, Pair<Integer, Float> o2) {
-                if (o1.getValue() + GameData.penalties[o1.getKey()] > o2.getValue()+ GameData.penalties[o2.getKey()]) {
+            public int compare(Float[] o1, Float[] o2) {
+                if (o1[1] + GameData.penalties[o1[0].intValue()] > o2[1]+ GameData.penalties[o2[0].intValue()]) {
                     return 1;
-                } else if (o1.getValue() + GameData.penalties[o1.getKey()] ==
-                           o2.getValue()+ GameData.penalties[o2.getKey()]) {
+                } else if (o1[1] + GameData.penalties[o1[0].intValue()] ==
+                           o2[1]+ GameData.penalties[o2[0].intValue()]) {
                     return 0;
                 } else {
                     return -1;
@@ -79,8 +79,8 @@ public class ResultsUI extends UI{
         });
         // Go through the results and display them on the screen
         for (int i = 0; i < GameData.results.size(); i++){
-            int boatNr = GameData.results.get(i).getKey();
-            float result = GameData.results.get(i).getValue();
+            int boatNr = GameData.results.get(i)[0].intValue();
+            float result = GameData.results.get(i)[1];
             float penalties = 0f;
 
             // Draw the result background element
@@ -126,7 +126,7 @@ public class ResultsUI extends UI{
         // When the user clicks anywhere on the screen, switch the game state as necessary
         if(mousePos.x != 0f && mousePos.y != 0f && GameData.results.size() == 4) {
             GameData.gamePlayState = false;
-            float playerResult = GameData.results.get(GameData.standings[0] - 1).getValue();
+            float playerResult = GameData.results.get(GameData.standings[0] - 1)[1];
 
             // If the game is over due to player's dnf or victory, switch to the endgame screen
             if (GameData.currentLeg == 2 || playerResult == Float.MAX_VALUE || GameData.standings[0] == 4){

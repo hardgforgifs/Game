@@ -43,7 +43,7 @@ public class GameData {
     // Boat's penalties
     public static float[] penalties = new float[4];
     // Result of the boat as a Pair<lane number, result>
-    public static List<Pair<Integer,Float>> results = new ArrayList<>();
+    public static List<Float[]> results = new ArrayList<>();
 
     // Current leg and the current timer in the leg
     public static int currentLeg = 0;
