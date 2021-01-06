@@ -22,16 +22,25 @@ public class MenuUI extends UI {
     private static final int EXIT_BUTTON_HEIGHT = 120;
     private static final int EXIT_BUTTON_Y = 100;
 
+    private static final int OPTIONS_BUTTON_WIDTH = 300;
+    private static final int OPTIONS_BUTTON_HEIGHT = 120;
+    private static final int OPTIONS_BUTTON_Y = 10;
+
+
     Texture playButtonActive;
     Texture playButtonInactive;
     Texture exitButtonActive;
     Texture exitButtonInactive;
+    Texture infoButtonActive;
+    Texture infoButtonInactive;
+    Texture optionsButtonActive;
+    Texture optionsButtonInactive;
     Texture logo;
 
     ScrollingBackground scrollingBackground = new ScrollingBackground();
 
 
-    public MenuUI(){
+    public MenuUI() {
         scrollingBackground.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         scrollingBackground.setSpeedFixed(true);
         scrollingBackground.setSpeed(ScrollingBackground.DEFAULT_SPEED);
@@ -40,7 +49,10 @@ public class MenuUI extends UI {
         playButtonInactive = new Texture("PlayUnselected.png");
         exitButtonActive = new Texture("ExitSelected.png");
         exitButtonInactive = new Texture("ExitUnselected.png");
+        optionsButtonActive = new Texture("PlaySelected.png");
+        optionsButtonInactive = new Texture("PlayUnselected.png");
         logo = new Texture("Title.png");
+
     }
 
     @Override
@@ -72,6 +84,16 @@ public class MenuUI extends UI {
             batch.draw(exitButtonActive, x, EXIT_BUTTON_Y, EXIT_BUTTON_WIDTH, EXIT_BUTTON_HEIGHT);
         } else {
             batch.draw(exitButtonInactive, x, EXIT_BUTTON_Y, EXIT_BUTTON_WIDTH, EXIT_BUTTON_HEIGHT);
+        }
+
+        x = screenWidth / 2 - OPTIONS_BUTTON_WIDTH / 2;
+        if (
+                mousePos.x < x + OPTIONS_BUTTON_WIDTH && mousePos.x > x &&
+                        mousePos.y < OPTIONS_BUTTON_Y + OPTIONS_BUTTON_HEIGHT &&
+                        mousePos.y > OPTIONS_BUTTON_Y) {
+            batch.draw(optionsButtonActive, x, OPTIONS_BUTTON_Y, OPTIONS_BUTTON_WIDTH, OPTIONS_BUTTON_HEIGHT);
+        } else {
+            batch.draw(optionsButtonInactive, x, OPTIONS_BUTTON_Y, OPTIONS_BUTTON_WIDTH, OPTIONS_BUTTON_HEIGHT);
         }
         batch.end();
 
@@ -107,8 +129,14 @@ public class MenuUI extends UI {
         ) {
             Gdx.app.exit();
         }
-
-
+        x = screenWidth / 2 - OPTIONS_BUTTON_WIDTH / 2;
+        if (clickPos.x < x + OPTIONS_BUTTON_WIDTH && clickPos.x > x &&
+                clickPos.y < OPTIONS_BUTTON_Y + OPTIONS_BUTTON_HEIGHT &&
+                clickPos.y > OPTIONS_BUTTON_Y) {
+            GameData.mainMenuState = false;
+            GameData.optionsState = true;
+            GameData.currentUI = new OptionsUI();
+        }
 
     }
 }
